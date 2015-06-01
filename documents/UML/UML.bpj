@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?PowerDesigner AppLocale="UTF16" ID="{FC42BB4F-7CEA-4D63-9FE1-BE7CF210A30C}" Label="" LastModificationDate="1433086335" Name="UML" Objects="3" Symbols="0" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" signature="PRJ_MODEL_XML" version="15.1.0.2850"?>
+<!-- Veuillez ne pas modifier ce fichier -->
+
+<Model xmlns:a="attribute" xmlns:c="collection" xmlns:o="object">
+
+<o:RootObject Id="o1">
+<c:Children>
+<o:Project Id="o2">
+<a:ObjectID>FC42BB4F-7CEA-4D63-9FE1-BE7CF210A30C</a:ObjectID>
+<a:Name>UML</a:Name>
+<a:Code>UML</a:Code>
+<a:CreationDate>1433086245</a:CreationDate>
+<a:Creator>collombj</a:Creator>
+<a:ModificationDate>1433086256</a:ModificationDate>
+<a:Modifier>collombj</a:Modifier>
+<a:ModelOptionsText>[ModelOptions]
+
+[ModelOptions\Prj options]
+CaseSensitive=No
+DisplayName=Yes
+EnableTrans=No
+EnableRequirements=No
+
+[ModelOptions\Prj options\NamingOptionsTemplates]
+
+[ModelOptions\Prj options\ClssNamingOptions]
+
+[ModelOptions\Prj options\ClssNamingOptions\PRJPCKG]
+
+[ModelOptions\Prj options\ClssNamingOptions\PRJPCKG\Name]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_name(%Name%,&quot;_&quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion
+
+[ModelOptions\Prj options\ClssNamingOptions\PRJPCKG\Code]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_code(%Code%,&quot; &quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion
+
+[ModelOptions\Prj options\ClssNamingOptions\FILO]
+
+[ModelOptions\Prj options\ClssNamingOptions\FILO\Name]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_name(%Name%,&quot;_&quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion
+
+[ModelOptions\Prj options\ClssNamingOptions\FILO\Code]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_code(%Code%,&quot; &quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion
+
+[ModelOptions\Prj options\ClssNamingOptions\FRMEOBJ]
+
+[ModelOptions\Prj options\ClssNamingOptions\FRMEOBJ\Name]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_name(%Name%,&quot;_&quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion
+
+[ModelOptions\Prj options\ClssNamingOptions\FRMEOBJ\Code]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_code(%Code%,&quot; &quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion
+
+[ModelOptions\Prj options\ClssNamingOptions\FRMELNK]
+
+[ModelOptions\Prj options\ClssNamingOptions\FRMELNK\Name]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_name(%Name%,&quot;_&quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion
+
+[ModelOptions\Prj options\ClssNamingOptions\FRMELNK\Code]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_code(%Code%,&quot; &quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion
+
+[ModelOptions\Prj options\ClssNamingOptions\DefaultClass]
+
+[ModelOptions\Prj options\ClssNamingOptions\DefaultClass\Name]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_name(%Name%,&quot;_&quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion
+
+[ModelOptions\Prj options\ClssNamingOptions\DefaultClass\Code]
+Template=
+MaxLen=254
+Case=M
+ValidChar=
+InvldChar=
+AllValid=Yes
+NoAccent=No
+DefaultChar=_
+Script=.convert_code(%Code%,&quot; &quot;)
+ConvTable=
+ConvTablePath=%_HOME%\Fichiers de ressources\Tables de conversion</a:ModelOptionsText>
+<a:Project.Template>1</a:Project.Template>
+<c:ModelsAndFiles>
+<o:ModelDocument Id="o3">
+<a:ObjectID>7C62B281-0C33-47A5-AB50-42D3AE37F2A2</a:ObjectID>
+<a:Name>Class</a:Name>
+<a:Code>Class</a:Code>
+<a:CreationDate>1433086264</a:CreationDate>
+<a:Creator>collombj</a:Creator>
+<a:ModificationDate>1433086335</a:ModificationDate>
+<a:Modifier>collombj</a:Modifier>
+<a:Location>file:///%[PRJ_ROOT_DIR]%/Class.moo</a:Location>
+<a:Extension>moo</a:Extension>
+<a:ModelDocument.ModelID>2B6BD166-97DC-4501-95CD-507A15231AC3</a:ModelDocument.ModelID>
+<a:ModelClassID>18112060-1A4B-11D1-83D9-444553540000</a:ModelClassID>
+</o:ModelDocument>
+</c:ModelsAndFiles>
+</o:Project>
+</c:Children>
+</o:RootObject>
+
+</Model>
