@@ -24,30 +24,11 @@
  *
  */
 
-package fr.upem.ir1.EelZen;
+package fr.upem.ir1.EelZen.Exception;
 
-import fr.upem.ir1.EelZen.Exception.CollisionException;
-import fr.upem.ir1.EelZen.controller.Position;
-import fr.upem.ir1.EelZen.controller.Snack;
-
-public class Main {
-
-    public static void main(String[] args) {
-        Snack s = new Snack(new Position(10, 10), new Position(1, -1));
-        System.out.println(s);
-
-        try {
-            while(true) {
-                s.changeDirection(Snack.MoveTo.RIGHT);
-                s.move();
-
-                System.out.println(s);
-            }
-        } catch(CollisionException e) {
-            System.out.println("Collision");
-            System.out.println(s);
-            e.printStackTrace();
-        }
-
-    }
+/**
+ * @author COLLOMB Jérémie
+ * @author GRISET  Valentin
+ */
+public class CollisionException extends Exception{
 }

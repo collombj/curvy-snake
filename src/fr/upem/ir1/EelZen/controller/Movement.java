@@ -26,6 +26,8 @@
 
 package fr.upem.ir1.EelZen.controller;
 
+import fr.upem.ir1.EelZen.Exception.CollisionException;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -116,11 +118,11 @@ public class Movement {
 
         if(size <= 2) return false;
 
-        Body head = bodyList.get(size);
+        Body head = bodyList.get(size-1);
 
         // Margin size represent the queue of the snack head allow (size) but only the queue.
         int marginSize = 0;
-        if(margin) marginSize = bodyList.get(size - 1).getRadius();  // The radius is the internal margin
+        if(margin) marginSize = bodyList.get(size-2).getRadius();  // The radius is the internal margin
 
 
         int i = 0;
@@ -150,12 +152,20 @@ public class Movement {
      *
      * @return The position leave by the snack, else if the snack is increasing it own size, return null.
      */
-    public Body move(Position p) {
+    public Body move(Position p) throws CollisionException {
         this.move.add(this.move.getLast().duplicate().translate(p));
+
+        if(this.isCrossed())
+            throw new CollisionException();
 
         this.isIncreased = !this.isIncreased;
 
         if(!this.isIncreased) return this.move.pop();
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Movement{move=" + move + '}';
     }
 }

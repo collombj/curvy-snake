@@ -96,7 +96,7 @@ public class Body extends Position {
      */
     public Body translate(Position p) {
         this.setX(this.getX() + p.getX());
-        this.setY(this.getX() + p.getX());
+        this.setY(this.getY() + p.getY());
 
         return this;
     }
@@ -158,5 +158,10 @@ public class Body extends Position {
         int result = super.hashCode();
         result = 31 * result + radius;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Body{x=" + getX() + ", y=" + getY() + ", radius=" + radius + '}';
     }
 }

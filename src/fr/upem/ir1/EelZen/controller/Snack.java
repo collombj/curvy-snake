@@ -26,6 +26,8 @@
 
 package fr.upem.ir1.EelZen.controller;
 
+import fr.upem.ir1.EelZen.Exception.CollisionException;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -106,7 +108,7 @@ public class Snack {
      *
      * @see Movement
      */
-    public Position move() {
+    public Position move() throws CollisionException {
         return this.movement.move(directionList.get(this.actualPosition));
     }
 
@@ -136,5 +138,10 @@ public class Snack {
             if(this.actualPosition >= directionList.size())
                 this.actualPosition = 0;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Snack{actualPosition=" + directionList.get(actualPosition) + ", movement=" + movement + '}';
     }
 }
