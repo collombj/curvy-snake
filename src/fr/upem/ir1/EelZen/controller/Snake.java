@@ -27,121 +27,161 @@
 package fr.upem.ir1.EelZen.controller;
 
 import fr.upem.ir1.EelZen.Exception.CollisionException;
+import fr.upem.ir1.EelZen.controller.bonus.Bonus;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.naming.TimeLimitExceededException;
+
 /**
- * This class consist to manage a snack movement and body. The class managed also the user steering action.
+ * This class consist to manage a snack movement and body. The class managed
+ * also the user steering action.
  *
  * <p>
- *  The class Store 2 Informations :
- *      <ol>
- *          <li>The body management</li>
- *          <li>The direction management</li>
- *      </ol>
+ * The class Store 2 Informations :
+ * <ol>
+ * <li>The body management</li>
+ * <li>The direction management</li>
+ * </ol>
  * </p>
  *
  * @author COLLOMB Jérémie
- * @author GRISET  Valentin
+ * @author GRISET Valentin
  *
  * @see Movement
  * @see Position
  */
 public class Snake {
 
-    /**
-     * Enum to list the two possibilities of action :
-     *  <ul>
-     *      <li>Go to the <code>LEFT</code></li>
-     *      <li>Go to the <code>RIGHT</code></li>
-     *  </ul>
-     */
-    public enum MoveTo {
-        LEFT,
-        RIGHT
-    }
+	/**
+	 * Enum to list the two possibilities of action :
+	 * <ul>
+	 * <li>Go to the <code>LEFT</code></li>
+	 * <li>Go to the <code>RIGHT</code></li>
+	 * </ul>
+	 */
+	public enum MoveTo {
+		LEFT, RIGHT
+	}
 
-    /**
-     * List of direction offer by the movement
-     */
-    private static final List<Position> directionList = Arrays.asList(
-         new Position(-1, -1),
-         new Position(-1, 0),
-         new Position(-1, 1),
-         new Position(0, 1),
-         new Position(1, 1),
-         new Position(1, 0),
-         new Position(1, -1),
-         new Position(0, -1)
-    );
+	/**
+	 * List of direction offer by the movement
+	 */
+	private static final List<Position> directionList = Arrays.asList(
+			new Position(-1, -1), new Position(-1, 0), new Position(-1, 1),
+			new Position(0, 1), new Position(1, 1), new Position(1, 0),
+			new Position(1, -1), new Position(0, -1));
 
-    /**
-     * Represent the ID/position in the List of the actual direction of the Snake.
-     */
-    private int actualPosition;
+	/**
+	 * Represent the ID/position in the List of the actual direction of the
+	 * Snake.
+	 */
+	private int actualPosition;
 
-    /**
-     * List of element of the Snake body.
-     */
-    private Movement movement;
+	/**
+	 * List of element of the Snake body.
+	 */
+	private Movement movement;
 
-    /**
-     * Constructor of the class. Initialize the initial position and direction.
-     *
-     * @param init The initial position of the Snake.
-     * @param direction The initial direction of the Snake.
-     */
-    public Snake(Position init, Position direction) {
-        this.actualPosition = directionList.indexOf(direction);
+	/**
+	 * Speed of the snake
+	 */
+	private final static int speed = 5;
 
-        if(this.actualPosition == -1)
-            this.actualPosition = 5;
+	/**
+	 * Bonus list active on snake
+	 */
+	private final LinkedList<Bonus> bonusList = new LinkedList<>();
 
-        this.movement = new Movement(init);
-    }
+	/**
+	 * Constructor of the class. Initialize the initial position and direction.
+	 *
+	 * @param init
+	 *            The initial position of the Snake.
+	 * @param direction
+	 *            The initial direction of the Snake.
+	 */
+	public Snake(Position init, Position direction) {
+		this.actualPosition = directionList.indexOf(direction);
 
-    /**
-     * Move the Snake
-     *
-     * @return The last deleted position, or null if no position was deleted.
-     *
-     * @see Movement
-     */
-    public Position move() throws CollisionException {
-        return this.movement.move(directionList.get(this.actualPosition));
-    }
+		if (this.actualPosition == -1)
+			this.actualPosition = 5;
 
-    /**
-     * Method the List of Movement. This method return a read only instance of the <code>List<Body></code>
-     *
-     * @return Instance in read only of the Body position List.
-     */
-    public List<Body> getMove() {
-        return this.movement.getMove();
-    }
+		this.movement = new Movement(init);
 
-    /**
-     * Action of the user to change (<code>LEFT</code> or <code>RIGHT</code>) the direction (step by step only).
-     *
-     * @param m The movement realize by the user
-     */
-    public void changeDirection(MoveTo m) {
-        if(m == MoveTo.LEFT) {
-            this.actualPosition--;
+	}
 
-            if(this.actualPosition < 0)
-                this.actualPosition = directionList.size()-1;
-        } else if(m == MoveTo.RIGHT) {
-            this.actualPosition++;
+	/**
+	 * Move the Snake
+	 *
+	 * @return The last deleted position, or null if no position was deleted.
+	 *
+	 * @see Movement
+	 */
+	public Position move() throws CollisionException {
+		return this.movement.move(directionList.get(this.actualPosition));
+	}
 
-            if(this.actualPosition >= directionList.size())
-                this.actualPosition = 0;
-        }
-    }
+	/**
+	 * Method the List of Movement. This method return a read only instance of
+	 * the <code>List<Circle></code>
+	 *
+	 * @return Instance in read only of the Circle position List.
+	 */
+	public List<Circle> getMove() {
+		return this.movement.getMove();
+	}
 
-    @Override
-    public String toString() {
-        return "Snake{actualPosition=" + directionList.get(actualPosition) + ", movement=" + movement + '}';
-    }
+	/**
+	 * Action of the user to change (<code>LEFT</code> or <code>RIGHT</code>)
+	 * the direction (step by step only).
+	 *
+	 * @param m
+	 *            The movement realize by the user
+	 */
+	public void changeDirection(MoveTo m) {
+		if (m == MoveTo.LEFT) {
+			this.actualPosition--;
+
+			if (this.actualPosition < 0)
+				this.actualPosition = directionList.size() - 1;
+		} else if (m == MoveTo.RIGHT) {
+			this.actualPosition++;
+
+			if (this.actualPosition >= directionList.size())
+				this.actualPosition = 0;
+		}
+	}
+
+	/**
+	 * Add a new bonus in the action bonus list of the snake
+	 * 
+	 * @param b
+	 *            The new bonus for the snake
+	 */
+	public void addBonus(Bonus b) {
+		this.bonusList.add(b);
+	}
+
+	/**
+	 * Decrement bonus time and delete if time is exceeded
+	 */
+	public void decrement() {
+
+		for (Bonus bonus : this.bonusList) {
+			try {
+				bonus.decrement();
+			} catch (TimeLimitExceededException e) {
+				this.bonusList.remove(bonus);
+			}
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Snake{actualPosition=" + directionList.get(actualPosition)
+				+ ", movement=" + movement + '}';
+	}
 }

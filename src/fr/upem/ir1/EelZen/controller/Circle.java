@@ -36,7 +36,7 @@ package fr.upem.ir1.EelZen.controller;
  * @author GRISET  Valentin
  * @see Position
  */
-public class Body extends Position {
+public class Circle extends Position {
 
     /**
      * <code>Radius</code> of the circle.
@@ -50,7 +50,7 @@ public class Body extends Position {
      * @param y      The <code>y</code> position of the center of the circle.
      * @param radius The <code>radius</code> of the circle.
      */
-    public Body(int x, int y, int radius) {
+    public Circle(int x, int y, int radius) {
         super(x, y);
         this.radius = radius;
     }
@@ -61,17 +61,17 @@ public class Body extends Position {
      * @param p      The position of the center of the circle.
      * @param radius The <code>radius</code> of the circle.
      */
-    public Body(Position p, int radius) {
+    public Circle(Position p, int radius) {
         super(p);
         this.radius = radius;
     }
 
     /**
-     * Constructor to create (duplicate) a new instance of a Body element.
+     * Constructor to create (duplicate) a new instance of a Circle element.
      *
-     * @param b Body element to duplicate into a new instance.
+     * @param b Circle element to duplicate into a new instance.
      */
-    public Body(Body b) {
+    public Circle(Circle b) {
         this(b.getX(), b.getY(), b.getRadius());
     }
 
@@ -80,11 +80,11 @@ public class Body extends Position {
      *
      * @return The copy of the element.
      *
-     * @see Body(Body)
+     * @see Circle(Circle)
      */
     @Override
-    public Body duplicate() {
-        return new Body(this);
+    public Circle duplicate() {
+        return new Circle(this);
     }
 
     /**
@@ -94,7 +94,7 @@ public class Body extends Position {
      *
      * @return The actual instance of the object (Useful when we chain action).
      */
-    public Body translate(Position p) {
+    public Circle translate(Position p) {
         this.setX(this.getX() + p.getX());
         this.setY(this.getY() + p.getY());
 
@@ -140,12 +140,12 @@ public class Body extends Position {
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;
-        if(!(o instanceof Body)) return false;
+        if(!(o instanceof Circle)) return false;
         if(!super.equals(o)) return false;
 
-        Body body = (Body) o;
+        Circle circle = (Circle) o;
 
-        return radius == body.radius;
+        return radius == circle.radius;
     }
 
     /**
@@ -162,6 +162,6 @@ public class Body extends Position {
 
     @Override
     public String toString() {
-        return "Body{x=" + getX() + ", y=" + getY() + ", radius=" + radius + '}';
+        return "Circle{x=" + getX() + ", y=" + getY() + ", radius=" + radius + '}';
     }
 }

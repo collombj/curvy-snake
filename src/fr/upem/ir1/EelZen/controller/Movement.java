@@ -47,9 +47,9 @@ public class Movement {
      */
     private static final int defaultRadius = 5;
     /**
-     * List of <code>Body</code> elements.
+     * List of <code>Circle</code> elements.
      */
-    private LinkedList<Body> move;
+    private LinkedList<Circle> move;
     /**
      * Flag to know if a previous move was done or not. It is used to increase the snack size (every other time).
      */
@@ -64,7 +64,7 @@ public class Movement {
         this.move = new LinkedList<>();
         this.isIncreased = false;
 
-        this.move.add(new Body(init, defaultRadius));
+        this.move.add(new Circle(init, defaultRadius));
     }
 
     /**
@@ -72,7 +72,7 @@ public class Movement {
      *
      * @return An unmodifiable view of the <code>move</code> list.
      */
-    public List<Body> getMove() {
+    public List<Circle> getMove() {
         return Collections.unmodifiableList(this.move);
     }
 
@@ -113,12 +113,12 @@ public class Movement {
      *
      * @see this.isCrossed(List)
      */
-    private boolean isCrossed(List<Body> bodyList, boolean margin) {
+    private boolean isCrossed(List<Circle> bodyList, boolean margin) {
         int size = bodyList.size();
 
         if(size <= 2) return false;
 
-        Body head = bodyList.get(size-1);
+        Circle head = bodyList.get(size-1);
 
         // Margin size represent the queue of the snack head allow (size) but only the queue.
         int marginSize = 0;
@@ -126,7 +126,7 @@ public class Movement {
 
 
         int i = 0;
-        for(Body b : this.move) {
+        for(Circle b : this.move) {
             if(i + marginSize >= size) {
                 continue;
             }
@@ -152,7 +152,7 @@ public class Movement {
      *
      * @return The position leave by the snack, else if the snack is increasing it own size, return null.
      */
-    public Body move(Position p) throws CollisionException {
+    public Circle move(Position p) throws CollisionException {
         this.move.add(this.move.getLast().duplicate().translate(p));
 
         if(this.isCrossed())
