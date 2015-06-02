@@ -48,7 +48,7 @@ import java.util.List;
  * @see Movement
  * @see Position
  */
-public class Snack {
+public class Snake {
 
     /**
      * Enum to list the two possibilities of action :
@@ -77,22 +77,22 @@ public class Snack {
     );
 
     /**
-     * Represent the ID/position in the List of the actual direction of the Snack.
+     * Represent the ID/position in the List of the actual direction of the Snake.
      */
     private int actualPosition;
 
     /**
-     * List of element of the Snack body.
+     * List of element of the Snake body.
      */
     private Movement movement;
 
     /**
      * Constructor of the class. Initialize the initial position and direction.
      *
-     * @param init The initial position of the Snack.
-     * @param direction The initial direction of the Snack.
+     * @param init The initial position of the Snake.
+     * @param direction The initial direction of the Snake.
      */
-    public Snack(Position init, Position direction) {
+    public Snake(Position init, Position direction) {
         this.actualPosition = directionList.indexOf(direction);
 
         if(this.actualPosition == -1)
@@ -102,7 +102,7 @@ public class Snack {
     }
 
     /**
-     * Move the Snack
+     * Move the Snake
      *
      * @return The last deleted position, or null if no position was deleted.
      *
@@ -142,6 +142,6 @@ public class Snack {
 
     @Override
     public String toString() {
-        return "Snack{actualPosition=" + directionList.get(actualPosition) + ", movement=" + movement + '}';
+        return "Snake{actualPosition=" + directionList.get(actualPosition) + ", movement=" + movement + '}';
     }
 }

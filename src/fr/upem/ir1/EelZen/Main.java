@@ -28,17 +28,17 @@ package fr.upem.ir1.EelZen;
 
 import fr.upem.ir1.EelZen.Exception.CollisionException;
 import fr.upem.ir1.EelZen.controller.Position;
-import fr.upem.ir1.EelZen.controller.Snack;
+import fr.upem.ir1.EelZen.controller.Snake;
 
 public class Main {
 
     public static void main(String[] args) {
-        Snack s = new Snack(new Position(10, 10), new Position(1, -1));
+        Snake s = new Snake(new Position(10, 10), new Position(1, -1));
         System.out.println(s);
 
         try {
             while(true) {
-                s.changeDirection(Snack.MoveTo.RIGHT);
+                s.changeDirection(Snake.MoveTo.RIGHT);
                 s.move();
 
                 System.out.println(s);

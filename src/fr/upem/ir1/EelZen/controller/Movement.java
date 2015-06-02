@@ -92,13 +92,13 @@ public class Movement {
      * Method to detect if the head of the snack <code>s</code> (the last insert into the <code>move</code>
      * LinkedList) is crossing/hitting the body of this .
      *
-     * @param s Snack to test with this snack body for a collision.
+     * @param s Snake to test with this snack body for a collision.
      *
      * @return True, if the snack cross a part of his own body, false else.
      *
      * @see this.isCrossed(List, boolean)
      */
-    public boolean isCrossed(Snack s) {
+    public boolean isCrossed(Snake s) {
         return this.isCrossed(s.getMove(), false);
     }
 
@@ -148,7 +148,7 @@ public class Movement {
      * <p>
      * <p>Every other time, the snack body increased it own size. Else, it move.</p>
      *
-     * @param p It's the direction of the Snack (value between -1 and 1 for <code>x</code> and <code>y</code>).
+     * @param p It's the direction of the Snake (value between -1 and 1 for <code>x</code> and <code>y</code>).
      *
      * @return The position leave by the snack, else if the snack is increasing it own size, return null.
      */
