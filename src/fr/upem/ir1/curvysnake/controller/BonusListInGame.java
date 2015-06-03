@@ -2,6 +2,7 @@ package fr.upem.ir1.curvysnake.controller;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Class to manage the list of bonus active in the game.
@@ -67,8 +68,14 @@ public class BonusListInGame {
             return result;
     }
 
-    public Position randomPosition(Snake...s) {
-        // TODO Create a random position
+    public Position randomPosition(Position min, Position max, BonusListInGame b, Snake...s) {
+    	
+    	//TODO Finir la création d'un nouveau bonus a une position aléatoire
+    	Random r= new Random();
+    	Position p = new Position(r.nextInt(max.getX()-min.getX())+min.getX(),r.nextInt(max.getY()-min.getY())+min.getY());
+    	
+    	Bonus bonus = new Bonus(p,);
+    	
         return new Position(0,0);
     }
 }
