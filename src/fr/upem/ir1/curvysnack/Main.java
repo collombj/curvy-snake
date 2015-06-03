@@ -24,11 +24,30 @@
  *
  */
 
-package fr.upem.ir1.EelZen.Exception;
+package fr.upem.ir1.curvysnack;
 
-/**
- * @author COLLOMB Jérémie
- * @author GRISET  Valentin
- */
-public class CollisionException extends Exception{
+import fr.upem.ir1.curvysnack.exception.CollisionException;
+import fr.upem.ir1.curvysnack.controller.Position;
+import fr.upem.ir1.curvysnack.controller.Snake;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Snake s = new Snake(new Position(10, 10), new Position(1, -1), new Position(0, 0), new Position(500, 500));
+        System.out.println(s);
+
+        try {
+            while(true) {
+                s.changeDirection(Snake.MoveTo.RIGHT);
+                s.move();
+
+                System.out.println(s);
+            }
+        } catch(CollisionException e) {
+            System.out.println("Collision");
+            System.out.println(s);
+            e.printStackTrace();
+        }
+
+    }
 }

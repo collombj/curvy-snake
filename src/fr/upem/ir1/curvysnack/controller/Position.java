@@ -24,7 +24,7 @@
  *
  */
 
-package fr.upem.ir1.EelZen.controller;
+package fr.upem.ir1.curvysnack.controller;
 
 /**
  * This class consist to manipulate a position. The position is caracterized by an <code>x</code> and an <code>y</code>.
@@ -91,9 +91,13 @@ public class Position {
      * Setter to set the <code>x</code> value of the position.
      *
      * @param x Value of the position in <code>x</code>.
+     *
+     * @return This Circle to chain action, if necessary.
      */
-    public void setX(int x) {
+    public Position setX(int x) {
         this.x = x;
+
+        return this;
     }
 
     /**
@@ -109,9 +113,13 @@ public class Position {
      * Setter to set the <code>y</code> value of the position.
      *
      * @param y Value of the position in <code>x</code>.
+     *
+     * @return This Circle to chain action, if necessary.
      */
-    public void setY(int y) {
+    public Position setY(int y) {
         this.y = y;
+
+        return this;
     }
 
     /**

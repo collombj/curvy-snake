@@ -24,7 +24,7 @@
  *
  */
 
-package fr.upem.ir1.EelZen.controller;
+package fr.upem.ir1.curvysnack.controller;
 
 /**
  * This class represent an element of the body of the snack. An element is represent by a circle and a center
@@ -114,9 +114,13 @@ public class Circle extends Position {
      * Setter to set the <code>radius</code> value of the element.
      *
      * @param radius The <code>radius</code> value to set.
+     *
+     * @return This Circle to chain action, if necessary.
      */
-    public void setRadius(int radius) {
+    public Circle setRadius(int radius) {
         this.radius = radius;
+
+        return this;
     }
 
     /**

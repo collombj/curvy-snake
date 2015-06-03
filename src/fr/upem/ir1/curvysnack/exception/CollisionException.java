@@ -24,30 +24,31 @@
  *
  */
 
-package fr.upem.ir1.EelZen;
+package fr.upem.ir1.curvysnack.exception;
 
-import fr.upem.ir1.EelZen.Exception.CollisionException;
-import fr.upem.ir1.EelZen.controller.Position;
-import fr.upem.ir1.EelZen.controller.Snake;
+import fr.upem.ir1.curvysnack.controller.Circle;
 
-public class Main {
+/**
+ * @author COLLOMB Jérémie
+ * @author GRISET  Valentin
+ */
+public class CollisionException extends Exception{
+    private boolean hitWall = false;
 
-    public static void main(String[] args) {
-        Snake s = new Snake(new Position(10, 10), new Position(1, -1));
-        System.out.println(s);
+    private Circle bestPosition = null;
 
-        try {
-            while(true) {
-                s.changeDirection(Snake.MoveTo.RIGHT);
-                s.move();
+    public CollisionException() {
+        super();
+    }
 
-                System.out.println(s);
-            }
-        } catch(CollisionException e) {
-            System.out.println("Collision");
-            System.out.println(s);
-            e.printStackTrace();
-        }
+    public CollisionException(Circle c) {
+        super();
 
+        this.hitWall = true;
+        // TODO Calculate the Best Position ever for the collision without going outside the limit
+    }
+
+    public Circle getBestPosition() {
+        return this.bestPosition;
     }
 }

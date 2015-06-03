@@ -24,9 +24,9 @@
  *
  */
 
-package fr.upem.ir1.EelZen.controller;
+package fr.upem.ir1.curvysnack.controller;
 
-import fr.upem.ir1.EelZen.Exception.CollisionException;
+import fr.upem.ir1.curvysnack.exception.CollisionException;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -55,14 +55,19 @@ public class Movement {
      */
     private boolean isIncreased;
 
+    private Position limitMin;
+    private Position limitMax;
+
     /**
      * Constructor of the body. It is only need the start point of the movement.
      *
      * @param init The initial point of the snack movement.
      */
-    public Movement(Position init) {
+    public Movement(Position init, Position limitMin, Position limitMax) {
         this.move = new LinkedList<>();
         this.isIncreased = false;
+        this.limitMin = limitMin;
+        this.limitMax = limitMax;
 
         this.move.add(new Circle(init, defaultRadius));
     }
@@ -74,6 +79,15 @@ public class Movement {
      */
     public List<Circle> getMove() {
         return Collections.unmodifiableList(this.move);
+    }
+
+    /**
+     * Method to get the head of the body (last added Circle).
+     *
+     * @return The last added Circle.
+     */
+    public Circle getHead() {
+        return this.move.getLast().duplicate();
     }
 
     /**
@@ -127,19 +141,22 @@ public class Movement {
 
         int i = 0;
         for(Circle b : this.move) {
-            if(i + marginSize >= size) {
+            if(i + marginSize >= size)
                 continue;
-            }
 
             // Distance (square of the) between an element and the head is lower than the radius of the head. So that
             // is a collision
-            if(head.distanceSquare(b) < Math.pow(b.getRadius() + head.getRadius(), 2)) {
+            if(head.distanceSquare(b) < Math.pow(b.getRadius() + head.getRadius(), 2))
                 return true;
-            }
 
             i++;
         }
 
+        return false;
+    }
+
+    public boolean isHittingTheWall() {
+        // TODO detection of the Wall Collision
         return false;
     }
 
@@ -152,8 +169,25 @@ public class Movement {
      *
      * @return The position leave by the snack, else if the snack is increasing it own size, return null.
      */
-    public Circle move(Position p) throws CollisionException {
-        this.move.add(this.move.getLast().duplicate().translate(p));
+    public Circle move(Position p, int size, boolean wallThrough) throws CollisionException {
+        return this.move(p, size, 0, wallThrough);
+    }
+
+    public Circle move(Position p, int size, int nextHope, boolean wallThrough) throws CollisionException {
+        Circle nextMove = this.move.getLast().duplicate();
+
+        // Manage the next hope position
+        for(int i = 0 ; i <= nextHope ; i++) {
+            nextMove.translate(p);
+        }
+
+        // Set the size of this body part
+        nextMove.setRadius(size + defaultRadius);
+
+        this.move.add(nextMove);
+
+        if(this.isHittingTheWall())
+            throw new CollisionException(this.getHead());
 
         if(this.isCrossed())
             throw new CollisionException();

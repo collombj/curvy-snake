@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?PowerDesigner AppLocale="UTF16" ID="{FC42BB4F-7CEA-4D63-9FE1-BE7CF210A30C}" Label="" LastModificationDate="1433089540" Name="UML" Objects="3" Symbols="0" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" signature="PRJ_MODEL_XML" version="15.1.0.2850"?>
+<?PowerDesigner AppLocale="UTF16" ID="{FC42BB4F-7CEA-4D63-9FE1-BE7CF210A30C}" Label="" LastModificationDate="1433156521" Name="UML" Objects="3" Symbols="0" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" signature="PRJ_MODEL_XML" version="15.1.0.2850"?>
 <!-- Veuillez ne pas modifier ce fichier -->
 
 <Model xmlns:a="attribute" xmlns:c="collection" xmlns:o="object">
@@ -456,7 +456,7 @@ Shadow=0</a:DisplayPreferences>
 <a:Code>Class</a:Code>
 <a:CreationDate>1433086264</a:CreationDate>
 <a:Creator>collombj</a:Creator>
-<a:ModificationDate>1433089540</a:ModificationDate>
+<a:ModificationDate>1433156521</a:ModificationDate>
 <a:Modifier>collombj</a:Modifier>
 <a:Location>file:///%[PRJ_ROOT_DIR]%/Class.moo</a:Location>
 <a:Extension>moo</a:Extension>
