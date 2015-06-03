@@ -28,144 +28,128 @@ package fr.upem.ir1.curvysnake.controller;
 
 import fr.upem.ir1.curvysnake.exception.CollisionException;
 
-import java.util.Collections;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
- * This class represent the movement (full body) of the snack.
+ * This class represent the movement (full body) of the snake.
  * <p>
  * <p>The class offer some methods to manipulate the body (see after).</p>
  *
  * @author COLLOMB Jérémie
  * @author GRISET  Valentin
  */
-public class Movement {
+class Movement {
 
     /**
-     * Default radius size of a body element.
+     * Default diameter size of a body element.
      */
-    private static final int defaultRadius = 5;
-    /**
-     * List of <code>Circle</code> elements.
-     */
-    private LinkedList<Circle> move;
-    /**
-     * Flag to know if a previous move was done or not. It is used to increase the snack size (every other time).
-     */
-    private boolean isIncreased;
-
+    private static final int defaultDiameter = 10;
     /**
      * The border limit minimum of the movement (allowed - include)
      */
-    private Position limitMin;
-
+    private static final Rectangle gameSize = new Rectangle();
     /**
-     * The border limit maximum of the movement (not allowed - exclude)
+     * List of <code>Circle</code> elements.
      */
-    private Position limitMax;
+    private final LinkedList<Ellipse2D> move = new LinkedList<>();
+    /**
+     * Flag to know if a previous move was done or not. It is used to increase the snake size (every other time).
+     */
+    private boolean isIncreased = false;
 
     /**
-     * Constructor of the body. It is only need the start point of the movement.
+     * Constructor of the body. It is only need the start body part.
      *
-     * @param init     The initial point of the snack movement.
-     * @param limitMin The border limit minimum for the movement (position allowed)
-     * @param limitMax The border limit maximum for the movement (position not allowed)
+     * @param init The initial point of the snake movement.
      */
-    public Movement(Position init, Position limitMin, Position limitMax) {
-        this.move = new LinkedList<>();
-        this.isIncreased = false;
-        this.limitMin = limitMin;
-        this.limitMax = limitMax;
-
-        this.move.add(new Circle(init, defaultRadius));
+    Movement(Point init) {
+        Ellipse2D.Float rectangle = new Ellipse2D.Float((float) init.x - defaultDiameter / 2,
+                                                        (float) init.y - defaultDiameter / 2,
+                                                        defaultDiameter, defaultDiameter);
+        this.move.add(rectangle);
     }
 
     /**
-     * Method to get an unmodifiable view of the snack body.
+     * Static method to get the information about the game size
      *
-     * @return An unmodifiable view of the <code>move</code> list.
+     * @return The information about the game size
      */
-    public List<Circle> getMove() {
-        return Collections.unmodifiableList(this.move);
+    static Rectangle getGameSize() {
+        return (Rectangle) gameSize.clone();
     }
 
     /**
-     * Method to get the head of the body (last added Circle).
+     * Static method to specify the information about the game size
+     *
+     * @param rectangle New game size information
+     */
+    static void setGameSize(Rectangle rectangle) {
+        gameSize.setBounds(rectangle);
+    }
+
+    /**
+     * Method to get the snake body.
+     *
+     * @return The snake body.
+     */
+    LinkedList<Ellipse2D> getMove() {
+        return this.move;
+    }
+
+    /**
+     * Method to get the head of the snake.
      *
      * @return The last added Circle.
      */
-    public Circle getHead() {
-        return this.move.getLast().duplicate();
+    Ellipse2D.Float getHead() {
+        return (Ellipse2D.Float) this.move.getLast().clone();
     }
 
     /**
-     * Method to get queue of the body (first element in the pile - List)
+     * Method to get queue of the snake.
      *
      * @return Return the queue element.
      */
-    public Circle getQueue() {
-        return this.move.getFirst();
+    Ellipse2D.Float getQueue() {
+        return (Ellipse2D.Float) this.move.getFirst().clone();
     }
 
     /**
-     * Method to detect if the head of the snack (the last insert into the <code>move</code> LinkedList) is
-     * crossing/hitting the body rest.
+     * Method to check if the Snake head hit a body part of a snake (another or itself).
      *
-     * @return True, if the snack cross a part of his own body, false else.
-     *
-     * @see this.isCrossed(List, boolean)
+     * @return True if the Snake head hit another snake, false else.
      */
-    public boolean isCrossed() {
-        return this.isCrossed(this.move, true);
+    boolean intersects() {
+        boolean ret = false;
+        for(Snake snake : Snake.getSnakeList()) {
+            if(this.intersects(snake.getMove()))
+                return true;
+        }
+
+        return false;
     }
 
     /**
-     * Method to detect if the head of the snack <code>s</code> (the last insert into the <code>move</code>
-     * LinkedList) is crossing/hitting the body of this .
+     * Method to check if the Snake head hit a body part of a snake (another or itself).
      *
-     * @param s Snake to test with this snack body for a collision.
+     * @param bodyList The body of the other Snake to check with.
      *
-     * @return True, if the snack cross a part of his own body, false else.
-     *
-     * @see this.isCrossed(List, boolean)
+     * @return True if the Snake head hit another snake, false else.
      */
-    public boolean isCrossed(Snake s) {
-        return this.isCrossed(s.getMove(), false);
-    }
+    private boolean intersects(LinkedList<Ellipse2D> bodyList) {
+        Ellipse2D head = this.getHead();
 
-    /**
-     * Method to detect if the head (the last insert into the <code>move</code> LinkedList) of the snack body
-     * (represent by <code>bodyList</code>) is crossing/hitting this body.
-     *
-     * @param bodyList The list of body elements to test with this list of body elements.
-     * @param margin   To know if the size of the second to last element is used like a margin.
-     *
-     * @return True, if the snack cross a part of his own body, false else.
-     *
-     * @see this.isCrossed(List)
-     */
-    private boolean isCrossed(List<Circle> bodyList, boolean margin) {
-        int size = bodyList.size();
-
-        if(size <= 2) return false;
-
-        Circle head = bodyList.get(size - 1);
-
-        // Margin size represent the queue of the snack head allow (size) but only the queue.
-        int marginSize = 0;
-        if(margin) marginSize = bodyList.get(size - 2).getRadius();  // The radius is the internal margin
-
+        boolean himself = false;
+        if(this.move == bodyList) himself = true;
 
         int i = 0;
-        for(Circle b : this.move) {
-            if(i + marginSize >= size)
-                continue;
-
-            // Distance (square of the) between an element and the head is lower than the radius of the head. So that
-            // is a collision
-            if(head.distanceSquare(b) < Math.pow(b.getRadius() + head.getRadius(), 2))
-                return true;
+        int sizeOther = bodyList.size();
+        for(Ellipse2D ellipse2D : bodyList) {
+            if(head.intersects(ellipse2D.getX(), ellipse2D.getY(), ellipse2D.getWidth(), ellipse2D.getHeight()))
+                if(!himself || sizeOther - i > head.getWidth())
+                    return true;
 
             i++;
         }
@@ -179,56 +163,60 @@ public class Movement {
      * @return True if the Snake head hit a border wall, false else.
      */
     public boolean isHittingTheWall() {
-        Circle head = this.getHead();
-
-        if(head.getX() - head.getRadius() < this.limitMin.getX() ||
-                   head.getY() - head.getRadius() < this.limitMin.getY()) {
-            return false;
-        } else if(head.getX() + head.getRadius() >= this.limitMax.getX() ||
-                          head.getY() + head.getRadius() >= this.limitMax.getY()) {
-            return false;
-        }
-
-        return true;
+        Ellipse2D.Float head = this.getHead();
+        return !gameSize.contains(head.getX(), head.getY(), head.getWidth(), head.getHeight());
     }
 
     /**
-     * Method to move the snack body.
+     * Method to move the snake body.
      * <p>
-     * <p>Every other time, the snack body increased it own size. Else, it move.</p>
+     * <p>Every other time, the snake body increased it own size. Else, it move.</p>
      *
      * @param direction   It's the direction of the Snake (value between -1 and 1 for <code>x</code> and <code>y</code>).
      * @param size        The bonus size needed to be added to the new body element size.
-     * @param wallThrough Bonus to know if the snack is allowed to through a wall.
+     * @param wallThrough Bonus to know if the snake is allowed to through a wall.
      *
-     * @return The position leave by the snack, else if the snack is increasing it own size, return null.
+     * @return The position leave by the snake, else if the snake is increasing it own size, return null.
+     *
+     * @throws CollisionException If collision with a wall or a snake (another or itself) is detected.
      */
-    public Circle move(Position direction, int size, boolean wallThrough) throws CollisionException {
+    public Ellipse2D move(Point direction, int size, boolean wallThrough) throws CollisionException {
         return this.move(direction, size, 0, wallThrough);
     }
 
     /**
-     * Method to move the snack body.
+     * Method to move the snake body.
      * <p>
-     * <p>Every other time, the snack body increased it own size. Else, it move.</p>
+     * <p>Every other time, the snake body increased it own size. Else, it move.</p>
      *
      * @param direction   It's the direction of the Snake (value between -1 and 1 for <code>x</code> and <code>y</code>).
      * @param size        The bonus size needed to be added to the new body element size.
      * @param nextHope    The next position (movement from the previous position) of the new body element.
-     * @param wallThrough Bonus to know if the snack is allowed to through a wall.
+     * @param wallThrough Bonus to know if the snake is allowed to through a wall.
      *
-     * @return The position leave by the snack, else if the snack is increasing it own size, return null.
+     * @return The position leave by the snake, else if the snake is increasing it own size, return null.
+     *
+     * @throws CollisionException If collision with a wall or a snake (another or itself) is detected.
      */
-    public Circle move(Position direction, int size, int nextHope, boolean wallThrough) throws CollisionException {
-        Circle nextMove = this.move.getLast().duplicate();
+    public Ellipse2D move(Point direction, int size, int nextHope, boolean wallThrough) throws CollisionException {
+        Rectangle nextHead = this.move.getLast().getBounds();
+
+        // Set the new size of the body element
+        size += defaultDiameter;
+        if(nextHead.width != size && nextHead.height != size) {
+            nextHead.translate(nextHead.width - size, nextHead.height - size);
+            nextHead.width = size;
+            nextHead.height = size;
+        }
 
         // Manage the next hope position
         for(int i = 0 ; i <= nextHope ; i++) {
-            nextMove.translate(direction);
+            nextHead.translate(direction.x, direction.y);
         }
 
-        // Set the size of this body part
-        nextMove.setRadius(size + defaultRadius);
+        // Transform rectangle to ellipse
+        Ellipse2D.Float nextMove = new Ellipse2D.Float(nextHead.x, nextHead.y, nextHead.width, nextHead.height);
+
 
         this.move.add(nextMove);
 
@@ -237,12 +225,13 @@ public class Movement {
             if(wallThrough) {
                 this.throughWall(nextMove);
             } else {
-                throw new CollisionException(this.getHead());   // TODO Optimize the Exception
+                this.move.removeLast();
+                throw new CollisionException();
             }
         }
 
         // Check if the move generate a collision with himself
-        if(this.isCrossed())
+        if(this.intersects())
             throw new CollisionException();
 
         this.isIncreased = !this.isIncreased;
@@ -257,19 +246,19 @@ public class Movement {
      *
      * @param head The head of the body which is edited.
      */
-    private void throughWall(Circle head) {
-        if(head.getX() + head.getRadius() < this.limitMin.getX()) {
-            head.setX(this.limitMax.getX() - head.getRadius() - 1);
+    private void throughWall(Ellipse2D.Float head) {
+        if(head.x < gameSize.x) {
+            head.x = gameSize.x + gameSize.width - 1;
         }
-        if(head.getY() + head.getRadius() < this.limitMin.getY()) {
-            head.setY(this.limitMax.getY() - head.getRadius() - 1);
+        if(head.y < gameSize.y) {
+            head.y = gameSize.y + gameSize.height - 1;
         }
 
-        if(head.getX() - head.getRadius() >= this.limitMax.getX()) {
-            head.setX(this.limitMin.getX() + head.getRadius());
+        if(head.x >= gameSize.x + gameSize.width - 1) {
+            head.x = gameSize.x;
         }
-        if(head.getY() - head.getRadius() >= this.limitMax.getY()) {
-            head.setY(this.limitMin.getY() + head.getRadius());
+        if(head.y >= gameSize.y + gameSize.height - 1) {
+            head.y = gameSize.y;
         }
     }
 
@@ -277,7 +266,7 @@ public class Movement {
      * Clean the Body element. Keep only the head of the body
      */
     public void clean() {
-        Circle head = this.move.getLast();
+        Ellipse2D head = this.move.getLast();
         this.move.clear();
         this.move.add(head);
     }

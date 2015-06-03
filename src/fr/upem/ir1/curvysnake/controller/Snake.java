@@ -29,13 +29,13 @@ package fr.upem.ir1.curvysnake.controller;
 import fr.upem.ir1.curvysnake.exception.CollisionException;
 
 import javax.naming.TimeLimitExceededException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.util.*;
 import java.util.List;
 
 /**
- * This class consist to manage a snack movement and body. The class managed
+ * This class consist to manage a snake movement and body. The class managed
  * also the user steering action.
  * <p>
  * <p>
@@ -49,66 +49,79 @@ import java.util.List;
  * @author COLLOMB Jérémie
  * @author GRISET Valentin
  * @see Movement
- * @see Position
  */
 public class Snake {
 
     /**
-     * Enum to list the two possibilities of action :
-     * <ul>
-     * <li>Go to the <code>LEFT</code></li>
-     * <li>Go to the <code>RIGHT</code></li>
-     * </ul>
-     */
-    public enum MoveTo {
-        LEFT, RIGHT
-    }
-
-    /**
      * List of direction offer by the movement
      */
-    private static final List<Position> directionList = Arrays.asList(
-                                                                             new Position(-1, -1), new Position(-1, 0), new Position(-1, 1),
-                                                                             new Position(0, 1), new Position(1, 1), new Position(1, 0),
-                                                                             new Position(1, -1), new Position(0, -1));
-
+    private static final List<Point> DIRECTION_LIST = Arrays.asList(new Point(-1, -1), new Point(-1, 0), new Point(-1, 1),
+                                                                    new Point(0, 1), new Point(1, 1), new Point(1, 0),
+                                                                    new Point(1, -1), new Point(0, -1));
     /**
-     * Represent the ID/position in the List of the actual direction of the
-     * Snake.
+     * List of Snake actually in the race
      */
-    private int actualPosition;
-
-    /**
-     * List of element of the Snake body.
-     */
-    private Movement movement;
-
+    private static final List<Snake> SNAKE_LIST = new LinkedList<>();
     /**
      * Speed of the snake
      */
-    private final static int speed = 5;
-
+    private final static int defaultSpeed = 10;
+    /**
+     * List of element of the Snake body.
+     */
+    private final Movement movement;
     /**
      * Bonus list active on snake
      */
     private final LinkedList<Bonus> bonusList = new LinkedList<>();
+    /**
+     * Represent the ID/position in the List of the actual direction of the
+     * Snake.
+     */
+    private int actualDirection;
 
     /**
      * Constructor of the class. Initialize the initial position and direction.
      *
      * @param init      The initial position of the Snake.
      * @param direction The initial direction of the Snake.
-     * @param limitMin  The border limit minimum of the movement (allowed - include)
-     * @param limitMax  The border limit maximum of the movement (not allowed - exclude)
      */
-    public Snake(Position init, Position direction, Position limitMin, Position limitMax) {
-        this.actualPosition = directionList.indexOf(direction);
+    public Snake(Point init, Point direction) {
+        this.actualDirection = DIRECTION_LIST.indexOf(direction);
 
-        if(this.actualPosition == -1)
-            this.actualPosition = 5;
+        if(this.actualDirection == -1)
+            this.actualDirection = 5;
 
-        this.movement = new Movement(init, limitMin, limitMax);
+        this.movement = new Movement(init);
 
+        SNAKE_LIST.add(this);
+    }
+
+    /**
+     * Static method to get the information about the game size
+     *
+     * @return The information about the game size
+     */
+    public static Rectangle getGameSize() {
+        return Movement.getGameSize();
+    }
+
+    /**
+     * Static method to specify the information about the game size
+     *
+     * @param rectangle New game size information
+     */
+    public static void setGameSize(Rectangle rectangle) {
+        Movement.setGameSize(rectangle);
+    }
+
+    /**
+     * Method to get the Snake list actually in game.
+     *
+     * @return An unmodifiable view of the snake list.
+     */
+    static List<Snake> getSnakeList() {
+        return Collections.unmodifiableList(SNAKE_LIST);
     }
 
     /**
@@ -116,18 +129,21 @@ public class Snake {
      *
      * @return The last deleted position, or null if no position was deleted.
      *
+     * @throws CollisionException     If collision with a wall or a snake (another or itself) is detected.
+     * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
      * @see Movement
      */
-    public List<Circle> move() throws CollisionException, IllegalAccessException {
-        List<Circle> result = new LinkedList<>();
+    public List<Ellipse2D> move() throws CollisionException, IllegalAccessException {
+        List<Ellipse2D> result = new LinkedList<>();
 
-        int speedBonus = speed;
+        int speedBonus = defaultSpeed;
         int sizeBonus = 0;
         int nextHope = 0;
 
         boolean wallThrough = false;
         boolean inverseDirection = false;
 
+        // Check all bonus
         for(Bonus bonus : this.bonusList) {
             speedBonus += bonus.speed();
             sizeBonus += bonus.size();
@@ -138,10 +154,11 @@ public class Snake {
         }
 
         // NextHope available only for the first move of this move action
-        result.add(this.movement.move(directionList.get(this.actualPosition), sizeBonus, nextHope, wallThrough));
+        result.add(this.movement.move(DIRECTION_LIST.get(this.actualDirection), sizeBonus, nextHope, wallThrough));
 
+        // create the movement of 'speed-1' move
         for(int i = 1 ; i < speedBonus ; i++) {
-            result.add(this.movement.move(directionList.get(this.actualPosition), sizeBonus, wallThrough));
+            result.add(this.movement.move(DIRECTION_LIST.get(this.actualDirection), sizeBonus, wallThrough));
         }
 
         return result;
@@ -153,7 +170,7 @@ public class Snake {
      *
      * @return Instance in read only of the Circle position List.
      */
-    public List<Circle> getMove() {
+    LinkedList<Ellipse2D> getMove() {
         return this.movement.getMove();
     }
 
@@ -162,10 +179,13 @@ public class Snake {
      * direction is managed by the bonus action too.
      *
      * @param m The movement realize by the user
+     *
+     * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
      */
     public void changeDirection(MoveTo m) throws IllegalAccessException {
         boolean inverse = false;
 
+        // Check only for inverse direction bonus
         for(Bonus bonus : this.bonusList) {
             if(bonus.inverseDirection())
                 inverse = !inverse;
@@ -177,15 +197,15 @@ public class Snake {
         }
 
         if(m == MoveTo.LEFT) {
-            this.actualPosition--;
+            this.actualDirection--;
 
-            if(this.actualPosition < 0)
-                this.actualPosition = directionList.size() - 1;
+            if(this.actualDirection < 0)
+                this.actualDirection = DIRECTION_LIST.size() - 1;
         } else if(m == MoveTo.RIGHT) {
-            this.actualPosition++;
+            this.actualDirection++;
 
-            if(this.actualPosition >= directionList.size())
-                this.actualPosition = 0;
+            if(this.actualDirection >= DIRECTION_LIST.size())
+                this.actualDirection = 0;
         }
     }
 
@@ -195,10 +215,15 @@ public class Snake {
      * <p>The <code>Bonus</code> can be empty (null).</p>
      *
      * @param b The new bonus for the snake
+     *
+     * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
      */
-    public void addBonus(Bonus b) {
-        if(b != null)
-            this.bonusList.add(b);
+    public void addBonus(Bonus b) throws IllegalAccessException {
+        if(b == null)
+            return;
+
+        b.size();   // Test of the Exception degree
+        this.bonusList.add(b);
     }
 
     /**
@@ -206,7 +231,7 @@ public class Snake {
      *
      * @return The Circle showing the Snake head.
      */
-    public Circle getHead() {
+    public Ellipse2D getHead() {
         return this.movement.getHead();
     }
 
@@ -215,7 +240,7 @@ public class Snake {
      *
      * @return The Circle showing the Snake queue.
      */
-    public Circle getQueue() {
+    public Ellipse2D getQueue() {
         return this.movement.getQueue();
     }
 
@@ -244,7 +269,24 @@ public class Snake {
 
     @Override
     public String toString() {
-        return "Snake{actualPosition=" + directionList.get(actualPosition)
-                       + ", movement=" + movement + '}';
+        StringBuilder s = new StringBuilder();
+        s.append("Snake: ");
+        for(Ellipse2D ellipse2D : this.getMove()) {
+            s.append("(" + ellipse2D.getCenterX() + ", " + ellipse2D.getCenterY() + ", " + ellipse2D.getWidth() / 2 + "), ");
+        }
+        s.deleteCharAt(s.length() - 1);
+
+        return s.toString();
+    }
+
+    /**
+     * Enum to list the two possibilities of action :
+     * <ul>
+     * <li>Go to the <code>LEFT</code></li>
+     * <li>Go to the <code>RIGHT</code></li>
+     * </ul>
+     */
+    public enum MoveTo {
+        LEFT, RIGHT
     }
 }

@@ -26,28 +26,40 @@
 
 package fr.upem.ir1.curvysnake;
 
-import fr.upem.ir1.curvysnake.controller.Position;
+import fr.upem.ir1.curvysnake.controller.Bonus;
 import fr.upem.ir1.curvysnake.controller.Snake;
 import fr.upem.ir1.curvysnake.exception.CollisionException;
+
+import java.awt.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        Snake s = new Snake(new Position(10, 10), new Position(1, -1), new Position(0, 0), new Position(500, 500));
-        System.out.println(s);
+        // Set environnement
+        Snake.setGameSize(new Rectangle(0, 0, 500, 500));
 
+        // Initialize the Snake
+        Snake s = new Snake(new Point(250, 250), new Point(1, 0));
+
+        // Display the first position
+        System.out.println(s);
         try {
+            s.addBonus(Bonus.size(10));
+
             while(true) {
-                s.changeDirection(Snake.MoveTo.RIGHT);
-                s.move();
+                s.move();   // Exception origin
+                s.decrement(); // Decrement Bonus time
 
                 System.out.println(s);
+
+               // s.changeDirection(Snake.MoveTo.RIGHT);  // Direction change
             }
         } catch(CollisionException e) {
-            System.out.println("Collision");
+            System.out.print("Collision: ");
             System.out.println(s);
             e.printStackTrace();
-        } catch(Exception e) {
+
+        } catch(Exception e) { // Other Exception
             e.printStackTrace();
         }
 

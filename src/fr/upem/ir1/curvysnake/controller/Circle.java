@@ -27,7 +27,7 @@
 package fr.upem.ir1.curvysnake.controller;
 
 /**
- * This class represent an element of the body of the snack. An element is represent by a circle and a center
+ * This class represent an element of the body of the snake. An element is represent by a circle and a center
  * (Position).
  * <p>
  * <p>The class is an extension of <code>Position</code>, with a radius.</p>

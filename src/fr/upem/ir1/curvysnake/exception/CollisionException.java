@@ -26,29 +26,16 @@
 
 package fr.upem.ir1.curvysnake.exception;
 
-import fr.upem.ir1.curvysnake.controller.Circle;
-
 /**
+ * Exception to detect when a collision between a snake and:
+ * <ul>
+ *     <li>Another snake</li>
+ *     <li>It own body</li>
+ *     <li>A wall</li>
+ * </ul>
+ * is detected.
+ *
  * @author COLLOMB Jérémie
  * @author GRISET  Valentin
  */
-public class CollisionException extends Exception{
-    private boolean hitWall = false;
-
-    private Circle bestPosition = null;
-
-    public CollisionException() {
-        super();
-    }
-
-    public CollisionException(Circle c) {
-        super();
-
-        this.hitWall = true;
-        // TODO Calculate the Best Position ever for the collision without going outside the limit
-    }
-
-    public Circle getBestPosition() {
-        return this.bestPosition;
-    }
-}
+public class CollisionException extends Exception{}

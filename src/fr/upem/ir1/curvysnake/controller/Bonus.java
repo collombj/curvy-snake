@@ -4,15 +4,15 @@ import javax.naming.TimeLimitExceededException;
 
 /**
  * Class which is a representation of a bonus.
- *
+ * <p>
  * <p>The different types of bonus are:</p>
  * <ol>
- *     <li>Speed (accelerate or slower)</li>
- *     <li>Size (increase or reduce the size)</li>
- *     <li>Next Hope space (the hope size between two body elements)</li>
- *     <li>Wall through</li>
- *     <li>Inverse user direction</li>
- *     <li>Erase all body element</li>
+ * <li>Speed (accelerate or slower)</li>
+ * <li>Size (increase or reduce the size)</li>
+ * <li>Next Hope space (the hope size between two body elements)</li>
+ * <li>Wall through</li>
+ * <li>Inverse user direction</li>
+ * <li>Erase all body element</li>
  * </ol>
  */
 public class Bonus {
@@ -46,10 +46,6 @@ public class Bonus {
         this.inverseDirection = b.inverseDirection;
 
         this.eraseAll = b.eraseAll;
-    }
-
-    public Bonus duplicate() {
-        return new Bonus(this);
     }
 
     public static Bonus speed(int speed) {
@@ -92,6 +88,10 @@ public class Bonus {
         b.eraseAll = eraseAll;
 
         return b;
+    }
+
+    public Bonus duplicate() {
+        return new Bonus(this);
     }
 
     public int speed() throws IllegalAccessException {
@@ -139,5 +139,47 @@ public class Bonus {
         this.duration = duration;
 
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Bonus)) return false;
+
+        Bonus bonus = (Bonus) o;
+
+        if(duration != bonus.duration) return false;
+        if(speed != bonus.speed) return false;
+        if(size != bonus.size) return false;
+        if(nextHope != bonus.nextHope) return false;
+        if(wallThrough != bonus.wallThrough) return false;
+        if(inverseDirection != bonus.inverseDirection) return false;
+        return eraseAll == bonus.eraseAll;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = duration;
+        result = 31 * result + speed;
+        result = 31 * result + size;
+        result = 31 * result + nextHope;
+        result = 31 * result + (wallThrough ? 1 : 0);
+        result = 31 * result + (inverseDirection ? 1 : 0);
+        result = 31 * result + (eraseAll ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Bonus{" +
+                       "duration=" + duration +
+                       ", speed=" + speed +
+                       ", size=" + size +
+                       ", nextHope=" + nextHope +
+                       ", wallThrough=" + wallThrough +
+                       ", inverseDirection=" + inverseDirection +
+                       ", eraseAll=" + eraseAll +
+                       '}';
     }
 }
