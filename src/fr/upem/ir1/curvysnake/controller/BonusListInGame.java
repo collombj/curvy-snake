@@ -66,4 +66,9 @@ public class BonusListInGame {
         else
             return result;
     }
+
+    public Position randomPosition(Snake...s) {
+        // TODO Create a random position
+        return new Position(0,0);
+    }
 }

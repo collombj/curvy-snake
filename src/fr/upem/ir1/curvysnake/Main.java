@@ -47,6 +47,8 @@ public class Main {
             System.out.println("Collision");
             System.out.println(s);
             e.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
         }
 
     }

@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @see <a href="http://stackoverflow.com/a/3110644">Source example - Jesper</a>
  */
-public final class Entry<K, V> implements Map.Entry<K, V> {
+public class Entry<K, V> implements Map.Entry<K, V> {
     /**
      * The Key of the element.
      */

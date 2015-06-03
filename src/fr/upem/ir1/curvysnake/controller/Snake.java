@@ -29,7 +29,6 @@ package fr.upem.ir1.curvysnake.controller;
 import fr.upem.ir1.curvysnake.exception.CollisionException;
 
 import javax.naming.TimeLimitExceededException;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -98,6 +97,8 @@ public class Snake {
      *
      * @param init      The initial position of the Snake.
      * @param direction The initial direction of the Snake.
+     * @param limitMin  The border limit minimum of the movement (allowed - include)
+     * @param limitMax  The border limit maximum of the movement (not allowed - exclude)
      */
     public Snake(Position init, Position direction, Position limitMin, Position limitMax) {
         this.actualPosition = directionList.indexOf(direction);
@@ -116,8 +117,8 @@ public class Snake {
      *
      * @see Movement
      */
-    public List<Circle> move() throws CollisionException {
-        List<Circle> result = null;
+    public List<Circle> move() throws CollisionException, IllegalAccessException {
+        List<Circle> result = new LinkedList<>();
 
         int speedBonus = speed;
         int sizeBonus = 0;
@@ -127,25 +128,20 @@ public class Snake {
         boolean inverseDirection = false;
 
         for(Bonus bonus : this.bonusList) {
-            try {
-                speedBonus += bonus.speed();
-                sizeBonus += bonus.size();
-                nextHope += bonus.nextHope();
+            speedBonus += bonus.speed();
+            sizeBonus += bonus.size();
+            nextHope += bonus.nextHope();
 
-                wallThrough = wallThrough || bonus.wallThrough();
-                inverseDirection = inverseDirection || bonus.inverseDirection();
-            } catch(IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            wallThrough = wallThrough || bonus.wallThrough();
+            inverseDirection = inverseDirection || bonus.inverseDirection();
         }
 
         // NextHope available only for the first move of this move action
-        this.movement.move(directionList.get(this.actualPosition), sizeBonus, nextHope, wallThrough);
+        result.add(this.movement.move(directionList.get(this.actualPosition), sizeBonus, nextHope, wallThrough));
 
         for(int i = 1 ; i < speedBonus ; i++) {
-            this.movement.move(directionList.get(this.actualPosition), sizeBonus, wallThrough);
+            result.add(this.movement.move(directionList.get(this.actualPosition), sizeBonus, wallThrough));
         }
-
 
         return result;
     }
@@ -161,12 +157,24 @@ public class Snake {
     }
 
     /**
-     * Action of the user to change (<code>LEFT</code> or <code>RIGHT</code>)
-     * the direction (step by step only).
+     * Action of the user to change (<code>LEFT</code> or <code>RIGHT</code>) the direction (step by step only). The
+     * direction is managed by the bonus action too.
      *
      * @param m The movement realize by the user
      */
-    public void changeDirection(MoveTo m) {
+    public void changeDirection(MoveTo m) throws IllegalAccessException {
+        boolean inverse = false;
+
+        for(Bonus bonus : this.bonusList) {
+            if(bonus.inverseDirection())
+                inverse = !inverse;
+        }
+
+        if(inverse) {
+            if(m == MoveTo.LEFT) m = MoveTo.RIGHT;
+            else if(m == MoveTo.RIGHT) m = MoveTo.LEFT;
+        }
+
         if(m == MoveTo.LEFT) {
             this.actualPosition--;
 
@@ -182,7 +190,7 @@ public class Snake {
 
     /**
      * Add a new bonus in the action bonus list of the snake.
-     *
+     * <p>
      * <p>The <code>Bonus</code> can be empty (null).</p>
      *
      * @param b The new bonus for the snake
@@ -202,6 +210,15 @@ public class Snake {
     }
 
     /**
+     * Method to get the queue element of the Snake.
+     *
+     * @return The Circle showing the Snake queue.
+     */
+    public Circle getQueue() {
+        return this.movement.getQueue();
+    }
+
+    /**
      * Decrement bonus time and delete if time is exceeded
      */
     public void decrement() {
@@ -212,6 +229,13 @@ public class Snake {
                 this.bonusList.remove(bonus);
             }
         }
+    }
+
+    /**
+     * Clean the Body element. Keep only the head of the body
+     */
+    public void clean() {
+        this.movement.clean();
     }
 
     @Override

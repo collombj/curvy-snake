@@ -55,13 +55,22 @@ public class Movement {
      */
     private boolean isIncreased;
 
+    /**
+     * The border limit minimum of the movement (allowed - include)
+     */
     private Position limitMin;
+
+    /**
+     * The border limit maximum of the movement (not allowed - exclude)
+     */
     private Position limitMax;
 
     /**
      * Constructor of the body. It is only need the start point of the movement.
      *
-     * @param init The initial point of the snack movement.
+     * @param init     The initial point of the snack movement.
+     * @param limitMin The border limit minimum for the movement (position allowed)
+     * @param limitMax The border limit maximum for the movement (position not allowed)
      */
     public Movement(Position init, Position limitMin, Position limitMax) {
         this.move = new LinkedList<>();
@@ -88,6 +97,15 @@ public class Movement {
      */
     public Circle getHead() {
         return this.move.getLast().duplicate();
+    }
+
+    /**
+     * Method to get queue of the body (first element in the pile - List)
+     *
+     * @return Return the queue element.
+     */
+    public Circle getQueue() {
+        return this.move.getFirst();
     }
 
     /**
@@ -132,11 +150,11 @@ public class Movement {
 
         if(size <= 2) return false;
 
-        Circle head = bodyList.get(size-1);
+        Circle head = bodyList.get(size - 1);
 
         // Margin size represent the queue of the snack head allow (size) but only the queue.
         int marginSize = 0;
-        if(margin) marginSize = bodyList.get(size-2).getRadius();  // The radius is the internal margin
+        if(margin) marginSize = bodyList.get(size - 2).getRadius();  // The radius is the internal margin
 
 
         int i = 0;
@@ -155,22 +173,22 @@ public class Movement {
         return false;
     }
 
+    /**
+     * Method to check if the Snake head hit a border wall.
+     *
+     * @return True if the Snake head hit a border wall, false else.
+     */
     public boolean isHittingTheWall() {
-        
-    	Circle head= this.getHead();
-    	
-    	if(
-    			head.getX()-head.getRadius()<this.limitMin.getX() || 
-    			head.getY()-head.getRadius()<this.limitMin.getY()
-    		){
-    		return false;
-    	}
-    	if(
-    			head.getX()+head.getRadius()>=this.limitMax.getX() ||
-    			head.getY()+head.getRadius()>=this.limitMax.getY()
-    		){
-    		return false;
-    	}	
+        Circle head = this.getHead();
+
+        if(head.getX() - head.getRadius() < this.limitMin.getX() ||
+                   head.getY() - head.getRadius() < this.limitMin.getY()) {
+            return false;
+        } else if(head.getX() + head.getRadius() >= this.limitMax.getX() ||
+                          head.getY() + head.getRadius() >= this.limitMax.getY()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -179,62 +197,89 @@ public class Movement {
      * <p>
      * <p>Every other time, the snack body increased it own size. Else, it move.</p>
      *
-     * @param p It's the direction of the Snake (value between -1 and 1 for <code>x</code> and <code>y</code>).
+     * @param direction   It's the direction of the Snake (value between -1 and 1 for <code>x</code> and <code>y</code>).
+     * @param size        The bonus size needed to be added to the new body element size.
+     * @param wallThrough Bonus to know if the snack is allowed to through a wall.
      *
      * @return The position leave by the snack, else if the snack is increasing it own size, return null.
      */
-    public Circle move(Position p, int size, boolean wallThrough) throws CollisionException {
-        return this.move(p, size, 0, wallThrough);
+    public Circle move(Position direction, int size, boolean wallThrough) throws CollisionException {
+        return this.move(direction, size, 0, wallThrough);
     }
 
-    public Circle move(Position p, int size, int nextHope, boolean wallThrough) throws CollisionException {
+    /**
+     * Method to move the snack body.
+     * <p>
+     * <p>Every other time, the snack body increased it own size. Else, it move.</p>
+     *
+     * @param direction   It's the direction of the Snake (value between -1 and 1 for <code>x</code> and <code>y</code>).
+     * @param size        The bonus size needed to be added to the new body element size.
+     * @param nextHope    The next position (movement from the previous position) of the new body element.
+     * @param wallThrough Bonus to know if the snack is allowed to through a wall.
+     *
+     * @return The position leave by the snack, else if the snack is increasing it own size, return null.
+     */
+    public Circle move(Position direction, int size, int nextHope, boolean wallThrough) throws CollisionException {
         Circle nextMove = this.move.getLast().duplicate();
 
         // Manage the next hope position
         for(int i = 0 ; i <= nextHope ; i++) {
-            nextMove.translate(p);
+            nextMove.translate(direction);
         }
 
         // Set the size of this body part
         nextMove.setRadius(size + defaultRadius);
 
         this.move.add(nextMove);
-        
-       
-        	if(this.isHittingTheWall()){
-        		 if(wallThrough){
-        			 this.throughWall(nextMove);
-        		 }
-        		 else{
-                     throw new CollisionException(this.getHead());
-        		 }
-                
-            }        	
-        
 
+        // Check if the move generate a wall hit
+        if(this.isHittingTheWall()) {
+            if(wallThrough) {
+                this.throughWall(nextMove);
+            } else {
+                throw new CollisionException(this.getHead());   // TODO Optimize the Exception
+            }
+        }
+
+        // Check if the move generate a collision with himself
         if(this.isCrossed())
             throw new CollisionException();
 
         this.isIncreased = !this.isIncreased;
 
+        // Every other time, the body size is increased.
         if(!this.isIncreased) return this.move.pop();
         return null;
     }
-    private void throughWall(Circle head){
-    	
-    	if(head.getX()+head.getRadius()<this.limitMin.getX()){
-    		head.setX(this.limitMax.getX()-head.getRadius()-1);
-    	}
-		if(head.getY()+head.getRadius()<this.limitMin.getY()){
-			head.setY(this.limitMax.getY()-head.getRadius()-1);		
-		    	}
-		if(head.getX()-head.getRadius()>=this.limitMax.getX()){
-			head.setX(this.limitMin.getX()+head.getRadius());
-		}
-		if(head.getY()-head.getRadius()>=this.limitMax.getY()){
-			head.setY(this.limitMin.getY()+head.getRadius());
-		}				
-    	
+
+    /**
+     * Method to move the head of the body to the opposite position when it hit a wall.
+     *
+     * @param head The head of the body which is edited.
+     */
+    private void throughWall(Circle head) {
+        if(head.getX() + head.getRadius() < this.limitMin.getX()) {
+            head.setX(this.limitMax.getX() - head.getRadius() - 1);
+        }
+        if(head.getY() + head.getRadius() < this.limitMin.getY()) {
+            head.setY(this.limitMax.getY() - head.getRadius() - 1);
+        }
+
+        if(head.getX() - head.getRadius() >= this.limitMax.getX()) {
+            head.setX(this.limitMin.getX() + head.getRadius());
+        }
+        if(head.getY() - head.getRadius() >= this.limitMax.getY()) {
+            head.setY(this.limitMin.getY() + head.getRadius());
+        }
+    }
+
+    /**
+     * Clean the Body element. Keep only the head of the body
+     */
+    public void clean() {
+        Circle head = this.move.getLast();
+        this.move.clear();
+        this.move.add(head);
     }
 
     @Override
