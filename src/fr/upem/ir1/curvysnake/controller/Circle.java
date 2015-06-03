@@ -24,7 +24,7 @@
  *
  */
 
-package fr.upem.ir1.curvysnack.controller;
+package fr.upem.ir1.curvysnake.controller;
 
 /**
  * This class represent an element of the body of the snack. An element is represent by a circle and a center

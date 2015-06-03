@@ -24,9 +24,9 @@
  *
  */
 
-package fr.upem.ir1.curvysnack.exception;
+package fr.upem.ir1.curvysnake.exception;
 
-import fr.upem.ir1.curvysnack.controller.Circle;
+import fr.upem.ir1.curvysnake.controller.Circle;
 
 /**
  * @author COLLOMB Jérémie

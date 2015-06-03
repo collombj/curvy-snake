@@ -24,9 +24,9 @@
  *
  */
 
-package fr.upem.ir1.curvysnack.controller;
+package fr.upem.ir1.curvysnake.controller;
 
-import fr.upem.ir1.curvysnack.exception.CollisionException;
+import fr.upem.ir1.curvysnake.exception.CollisionException;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -156,8 +156,22 @@ public class Movement {
     }
 
     public boolean isHittingTheWall() {
-        // TODO detection of the Wall Collision
-        return false;
+        
+    	Circle head= this.getHead();
+    	
+    	if(
+    			head.getX()-head.getRadius()<this.limitMin.getX() || 
+    			head.getY()-head.getRadius()<this.limitMin.getY()
+    		){
+    		return false;
+    	}
+    	if(
+    			head.getX()+head.getRadius()>=this.limitMax.getX() ||
+    			head.getY()+head.getRadius()>=this.limitMax.getY()
+    		){
+    		return false;
+    	}	
+        return true;
     }
 
     /**
@@ -185,9 +199,18 @@ public class Movement {
         nextMove.setRadius(size + defaultRadius);
 
         this.move.add(nextMove);
-
-        if(this.isHittingTheWall())
-            throw new CollisionException(this.getHead());
+        
+       
+        	if(this.isHittingTheWall()){
+        		 if(wallThrough){
+        			 this.throughWall(nextMove);
+        		 }
+        		 else{
+                     throw new CollisionException(this.getHead());
+        		 }
+                
+            }        	
+        
 
         if(this.isCrossed())
             throw new CollisionException();
@@ -196,6 +219,22 @@ public class Movement {
 
         if(!this.isIncreased) return this.move.pop();
         return null;
+    }
+    private void throughWall(Circle head){
+    	
+    	if(head.getX()+head.getRadius()<this.limitMin.getX()){
+    		head.setX(this.limitMax.getX()-head.getRadius()-1);
+    	}
+		if(head.getY()+head.getRadius()<this.limitMin.getY()){
+			head.setY(this.limitMax.getY()-head.getRadius()-1);		
+		    	}
+		if(head.getX()-head.getRadius()>=this.limitMax.getX()){
+			head.setX(this.limitMin.getX()+head.getRadius());
+		}
+		if(head.getY()-head.getRadius()>=this.limitMax.getY()){
+			head.setY(this.limitMin.getY()+head.getRadius());
+		}				
+    	
     }
 
     @Override

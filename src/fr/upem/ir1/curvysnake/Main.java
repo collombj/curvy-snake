@@ -24,11 +24,11 @@
  *
  */
 
-package fr.upem.ir1.curvysnack;
+package fr.upem.ir1.curvysnake;
 
-import fr.upem.ir1.curvysnack.exception.CollisionException;
-import fr.upem.ir1.curvysnack.controller.Position;
-import fr.upem.ir1.curvysnack.controller.Snake;
+import fr.upem.ir1.curvysnake.controller.Position;
+import fr.upem.ir1.curvysnake.controller.Snake;
+import fr.upem.ir1.curvysnake.exception.CollisionException;
 
 public class Main {
 

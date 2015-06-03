@@ -24,11 +24,12 @@
  *
  */
 
-package fr.upem.ir1.curvysnack.controller;
+package fr.upem.ir1.curvysnake.controller;
 
-import fr.upem.ir1.curvysnack.exception.CollisionException;
+import fr.upem.ir1.curvysnake.exception.CollisionException;
 
 import javax.naming.TimeLimitExceededException;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
