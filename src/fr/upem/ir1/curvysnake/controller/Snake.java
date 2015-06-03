@@ -30,6 +30,7 @@ import fr.upem.ir1.curvysnake.exception.CollisionException;
 
 import javax.naming.TimeLimitExceededException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -222,11 +223,14 @@ public class Snake {
      * Decrement bonus time and delete if time is exceeded
      */
     public void decrement() {
-        for(Bonus bonus : this.bonusList) {
+        Iterator<Bonus> it = this.bonusList.iterator();
+        while(it.hasNext()) {
+            Bonus b = it.next();
+
             try {
-                bonus.decrement();
+                b.decrement();
             } catch(TimeLimitExceededException e) {
-                this.bonusList.remove(bonus);
+                it.remove();
             }
         }
     }
