@@ -33,22 +33,5 @@ import fr.upem.ir1.curvysnake.controller.Circle;
  * @author GRISET  Valentin
  */
 public class CollisionException extends Exception{
-    private boolean hitWall = false;
 
-    private Circle bestPosition = null;
-
-    public CollisionException() {
-        super();
-    }
-
-    public CollisionException(Circle c) {
-        super();
-
-        this.hitWall = true;
-        // TODO Calculate the Best Position ever for the collision without going outside the limit
-    }
-
-    public Circle getBestPosition() {
-        return this.bestPosition;
-    }
 }

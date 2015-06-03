@@ -237,7 +237,8 @@ public class Movement {
             if(wallThrough) {
                 this.throughWall(nextMove);
             } else {
-                throw new CollisionException(this.getHead());   // TODO Optimize the Exception
+            	this.move.removeLast();
+                throw new CollisionException();
             }
         }
 
