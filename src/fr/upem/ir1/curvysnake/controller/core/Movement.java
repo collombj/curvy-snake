@@ -24,9 +24,10 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller;
+package fr.upem.ir1.curvysnake.controller.core;
 
-import fr.upem.ir1.curvysnake.exception.CollisionException;
+import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
+import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -49,11 +50,11 @@ class Movement {
     /**
      * The border limit minimum of the movement (allowed - include)
      */
-    private static final Rectangle gameSize = new Rectangle();
+    private static Rectangle gameSize = null;
     /**
-     * List of <code>Circle</code> elements.
+     * List of <code>Ellipse2D.Float</code> (body) elements.
      */
-    private final LinkedList<Ellipse2D> move = new LinkedList<>();
+    private final LinkedList<Ellipse2D.Float> move = new LinkedList<>();
     /**
      * Flag to know if a previous move was done or not. It is used to increase the snake size (every other time).
      */
@@ -65,10 +66,10 @@ class Movement {
      * @param init The initial point of the snake movement.
      */
     Movement(Point init) {
-        Ellipse2D.Float rectangle = new Ellipse2D.Float((float) init.x - defaultDiameter / 2,
+        Ellipse2D.Float aFloat = new Ellipse2D.Float((float) init.x - defaultDiameter / 2,
                                                         (float) init.y - defaultDiameter / 2,
                                                         defaultDiameter, defaultDiameter);
-        this.move.add(rectangle);
+        this.move.add(aFloat);
     }
 
     /**
@@ -77,7 +78,7 @@ class Movement {
      * @return The information about the game size
      */
     static Rectangle getGameSize() {
-        return (Rectangle) gameSize.clone();
+        return gameSize;
     }
 
     /**
@@ -86,7 +87,7 @@ class Movement {
      * @param rectangle New game size information
      */
     static void setGameSize(Rectangle rectangle) {
-        gameSize.setBounds(rectangle);
+        gameSize = rectangle;
     }
 
     /**
@@ -94,14 +95,14 @@ class Movement {
      *
      * @return The snake body.
      */
-    LinkedList<Ellipse2D> getMove() {
+    LinkedList<Ellipse2D.Float> getMove() {
         return this.move;
     }
 
     /**
      * Method to get the head of the snake.
      *
-     * @return The last added Circle.
+     * @return The last added Ellipse2D.Float.
      */
     Ellipse2D.Float getHead() {
         return (Ellipse2D.Float) this.move.getLast().clone();
@@ -122,10 +123,26 @@ class Movement {
      * @return True if the Snake head hit another snake, false else.
      */
     boolean intersects() {
-        boolean ret = false;
         for(Snake snake : Snake.getSnakeList()) {
             if(this.intersects(snake.getMove()))
                 return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Method to test if an Ellipse2D.Float is intersects this Snake body.
+     *
+     * @param position The Ellipse2D.Float to test with this Snake body.
+     *
+     * @return True if an insersection is detected, false else.
+     */
+    boolean intersects(Ellipse2D.Float position) {
+        for(Ellipse2D.Float aFloat : this.move) {
+            if(position.intersects(aFloat.getX(), aFloat.getY(), aFloat.getWidth(), aFloat.getHeight())) {
+                return true;
+            }
         }
 
         return false;
@@ -138,8 +155,8 @@ class Movement {
      *
      * @return True if the Snake head hit another snake, false else.
      */
-    private boolean intersects(LinkedList<Ellipse2D> bodyList) {
-        Ellipse2D head = this.getHead();
+    private boolean intersects(LinkedList<Ellipse2D.Float> bodyList) {
+        Ellipse2D.Float head = this.getHead();
 
         boolean himself = false;
         if(this.move == bodyList) himself = true;
@@ -161,27 +178,15 @@ class Movement {
      * Method to check if the Snake head hit a border wall.
      *
      * @return True if the Snake head hit a border wall, false else.
+     *
+     * @throws GameSizeException If the GameSize is not set.
      */
-    public boolean isHittingTheWall() {
+    public boolean isHittingTheWall() throws GameSizeException {
         Ellipse2D.Float head = this.getHead();
-        return !gameSize.contains(head.getX(), head.getY(), head.getWidth(), head.getHeight());
-    }
 
-    /**
-     * Method to move the snake body.
-     * <p>
-     * <p>Every other time, the snake body increased it own size. Else, it move.</p>
-     *
-     * @param direction   It's the direction of the Snake (value between -1 and 1 for <code>x</code> and <code>y</code>).
-     * @param size        The bonus size needed to be added to the new body element size.
-     * @param wallThrough Bonus to know if the snake is allowed to through a wall.
-     *
-     * @return The position leave by the snake, else if the snake is increasing it own size, return null.
-     *
-     * @throws CollisionException If collision with a wall or a snake (another or itself) is detected.
-     */
-    public Ellipse2D move(Point direction, int size, boolean wallThrough) throws CollisionException {
-        return this.move(direction, size, 0, wallThrough);
+        if(gameSize == null)
+            throw new GameSizeException();
+        return !gameSize.contains(head.x, head.y, head.width, head.height);
     }
 
     /**
@@ -197,8 +202,9 @@ class Movement {
      * @return The position leave by the snake, else if the snake is increasing it own size, return null.
      *
      * @throws CollisionException If collision with a wall or a snake (another or itself) is detected.
+     * @throws GameSizeException  If the GameSize is not set
      */
-    public Ellipse2D move(Point direction, int size, int nextHope, boolean wallThrough) throws CollisionException {
+    public Ellipse2D.Float move(Point direction, int size, int nextHope, boolean wallThrough) throws CollisionException, GameSizeException {
         Rectangle nextHead = this.move.getLast().getBounds();
 
         // Set the new size of the body element
@@ -266,7 +272,7 @@ class Movement {
      * Clean the Body element. Keep only the head of the body
      */
     public void clean() {
-        Ellipse2D head = this.move.getLast();
+        Ellipse2D.Float head = this.move.getLast();
         this.move.clear();
         this.move.add(head);
     }

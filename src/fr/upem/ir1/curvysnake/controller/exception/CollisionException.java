@@ -24,7 +24,7 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.exception;
+package fr.upem.ir1.curvysnake.controller.exception;
 
 /**
  * Exception to detect when a collision between a snake and:

@@ -24,21 +24,20 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller;
+package fr.upem.ir1.curvysnake.controller.core;
 
 import java.util.Map;
 
 /**
  * Class to manage an association of to element.
- *
+ * <p>
  * <p>It is a simple association of a <code>Key</code> and a <code>Value</code>. It is a simplified version of an
  * element of an HashMap.</p>
- *
+ * <p>
  * <p><strong>This class allow you to edit only the Value field.</strong></p>
  *
  * @author COLLOMB Jérémie
  * @author GRISET  Valentin
- *
  * @see <a href="http://stackoverflow.com/a/3110644">Source example - Jesper</a>
  */
 public class Entry<K, V> implements Map.Entry<K, V> {
@@ -55,7 +54,7 @@ public class Entry<K, V> implements Map.Entry<K, V> {
     /**
      * Constructor of a new element. Create a couple of Key-Value.
      *
-     * @param key The Key of the element.
+     * @param key   The Key of the element.
      * @param value The Value associated to the element Key.
      */
     public Entry(K key, V value) {

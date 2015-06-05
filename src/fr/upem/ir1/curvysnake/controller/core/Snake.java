@@ -24,9 +24,11 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller;
+package fr.upem.ir1.curvysnake.controller.core;
 
-import fr.upem.ir1.curvysnake.exception.CollisionException;
+import fr.upem.ir1.curvysnake.controller.exception.BonusException;
+import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
+import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
 
 import javax.naming.TimeLimitExceededException;
 import java.awt.*;
@@ -53,27 +55,32 @@ import java.util.List;
 public class Snake {
 
     /**
-     * List of direction offer by the movement
+     * List of direction offer by the movement.
      */
     private static final List<Point> DIRECTION_LIST = Arrays.asList(new Point(-1, -1), new Point(-1, 0), new Point(-1, 1),
                                                                     new Point(0, 1), new Point(1, 1), new Point(1, 0),
                                                                     new Point(1, -1), new Point(0, -1));
     /**
-     * List of Snake actually in the race
+     * List of Snake actually in the race.
      */
     private static final List<Snake> SNAKE_LIST = new LinkedList<>();
     /**
-     * Speed of the snake
+     * Speed of the snake.
      */
     private final static int defaultSpeed = 10;
+    /**
+     * List of Bonus actually in game.
+     */
+    private static BonusListInGame bonusListInGame = null;
+
     /**
      * List of element of the Snake body.
      */
     private final Movement movement;
     /**
-     * Bonus list active on snake
+     * Bonus list active on snake.
      */
-    private final LinkedList<Bonus> bonusList = new LinkedList<>();
+    private final List<Bonus> bonusList = new LinkedList<>();
     /**
      * Represent the ID/position in the List of the actual direction of the
      * Snake.
@@ -116,6 +123,55 @@ public class Snake {
     }
 
     /**
+     * Method to get the Bonus List actually in Game.
+     *
+     * @return The BonusListInGame with all Bonus associated to a position.
+     */
+    public static BonusListInGame getBonusListInGame() {
+        return bonusListInGame;
+    }
+
+    /**
+     * Method to set the Bonus List actually in Game for all Snake.
+     *
+     * @param bonus The BonusListInGame for all Snake.
+     */
+    public static void setBonusListInGame(BonusListInGame bonus) {
+        bonusListInGame = bonus;
+    }
+
+    /**
+     * Method to clean all Snake trace.
+     */
+    private static void cleanAll() {
+        SNAKE_LIST.forEach(fr.upem.ir1.curvysnake.controller.core.Snake::clean);
+    }
+
+    /**
+     * Method to decrement all Snake bonus.
+     */
+    public static void decrementAll() {
+        SNAKE_LIST.forEach(fr.upem.ir1.curvysnake.controller.core.Snake::decrement);
+    }
+
+    /**
+     * Method to detect if a Position is not used by a Snake body element. The
+     *
+     * @param position The position to test with all Snake.
+     *
+     * @return True if the position is free, false else.
+     */
+    public static boolean positionIsFree(Ellipse2D.Float position) {
+        for(Snake snake : SNAKE_LIST) {
+            if(snake.movement.intersects(position)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Method to get the Snake list actually in game.
      *
      * @return An unmodifiable view of the snake list.
@@ -131,10 +187,13 @@ public class Snake {
      *
      * @throws CollisionException     If collision with a wall or a snake (another or itself) is detected.
      * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
+     * @throws GameSizeException      If the GameSize is not set
+     * @throws BonusException         If the BonusListInGame is not set
      * @see Movement
      */
-    public List<Ellipse2D> move() throws CollisionException, IllegalAccessException {
-        List<Ellipse2D> result = new LinkedList<>();
+    public List<Ellipse2D.Float> move() throws CollisionException, IllegalAccessException, GameSizeException,
+                                                       BonusException {
+        List<Ellipse2D.Float> result = new LinkedList<>();
 
         int speedBonus = defaultSpeed;
         int sizeBonus = 0;
@@ -153,24 +212,40 @@ public class Snake {
             inverseDirection = inverseDirection || bonus.inverseDirection();
         }
 
-        // NextHope available only for the first move of this move action
-        result.add(this.movement.move(DIRECTION_LIST.get(this.actualDirection), sizeBonus, nextHope, wallThrough));
-
         // create the movement of 'speed-1' move
-        for(int i = 1 ; i < speedBonus ; i++) {
-            result.add(this.movement.move(DIRECTION_LIST.get(this.actualDirection), sizeBonus, wallThrough));
+        for(int i = 0 ; i < speedBonus ; i++) {
+            // NextHope available only for the first move of this move action
+            if(i != 0)
+                nextHope = 0;
+
+            result.add(this.movement.move(DIRECTION_LIST.get(this.actualDirection), sizeBonus, nextHope, wallThrough));
+
+            result.addAll(this.detectBonus());
         }
 
         return result;
     }
 
+    private List<Ellipse2D.Float> detectBonus() throws BonusException, IllegalAccessException {
+        if(bonusListInGame == null)
+            throw new BonusException("The BonusListInGame is not set for Snake");
+
+        LinkedList<Ellipse2D.Float> result = new LinkedList<>();
+
+        bonusListInGame.forEach((entry) -> {
+            result.add(entry.getKey());
+            this.addBonus(entry.getValue());
+        });
+
+        return result;
+    }
+
     /**
-     * Method the List of Movement. This method return a read only instance of
-     * the <code>List<Circle></code>
+     * Method to get the List of Movement.
      *
-     * @return Instance in read only of the Circle position List.
+     * @return The Ellipse2D.Float position List.
      */
-    LinkedList<Ellipse2D> getMove() {
+    LinkedList<Ellipse2D.Float> getMove() {
         return this.movement.getMove();
     }
 
@@ -215,39 +290,39 @@ public class Snake {
      * <p>The <code>Bonus</code> can be empty (null).</p>
      *
      * @param b The new bonus for the snake
-     *
-     * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
      */
-    public void addBonus(Bonus b) throws IllegalAccessException {
+    public void addBonus(Bonus b) {
         if(b == null)
             return;
 
-        b.size();   // Test of the Exception degree
-        this.bonusList.add(b);
+        if(b.eraseAll())
+            Snake.cleanAll();
+        else
+            this.bonusList.add(b);
     }
 
     /**
      * Method to get the head element of the Snake.
      *
-     * @return The Circle showing the Snake head.
+     * @return The Ellipse2D.Float showing the Snake head.
      */
-    public Ellipse2D getHead() {
+    public Ellipse2D.Float getHead() {
         return this.movement.getHead();
     }
 
     /**
      * Method to get the queue element of the Snake.
      *
-     * @return The Circle showing the Snake queue.
+     * @return The Ellipse2D.Float showing the Snake queue.
      */
-    public Ellipse2D getQueue() {
+    public Ellipse2D.Float getQueue() {
         return this.movement.getQueue();
     }
 
     /**
      * Decrement bonus time and delete if time is exceeded
      */
-    public void decrement() {
+    private void decrement() {
         Iterator<Bonus> it = this.bonusList.iterator();
         while(it.hasNext()) {
             Bonus b = it.next();
@@ -271,9 +346,9 @@ public class Snake {
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append("Snake: ");
-        for(Ellipse2D ellipse2D : this.getMove()) {
+        this.getMove().forEach((ellipse2D) -> {
             s.append("(" + ellipse2D.getCenterX() + ", " + ellipse2D.getCenterY() + ", " + ellipse2D.getWidth() / 2 + "), ");
-        }
+        });
         s.deleteCharAt(s.length() - 1);
 
         return s.toString();

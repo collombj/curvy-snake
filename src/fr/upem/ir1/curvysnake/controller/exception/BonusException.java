@@ -24,23 +24,16 @@
  *
  */
 
-package fr.upem.ir1.curvysnake;
+package fr.upem.ir1.curvysnake.controller.exception;
 
-import fr.upem.ir1.curvysnake.controller.MultiPlayer;
-import fr.upem.ir1.curvysnake.controller.SinglePlayer;
-import fr.upem.ir1.curvysnake.controller.core.Bonus;
-import fr.upem.ir1.curvysnake.controller.core.BonusListInGame;
-import fr.upem.ir1.curvysnake.controller.core.Snake;
-import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
-
-import java.awt.*;
-
-public class Main {
-
-    public static void main(String[] args) {
-        if(args.length == 1 && (args[0].equals("multiplayer") || args[0].equals("--multiplayer")))
-            MultiPlayer.run();
-        else
-            SinglePlayer.run();
+/**
+ * @author collombj
+ * @project EelZen
+ * @package fr.upem.ir1.curvysnake.controller.exception
+ * @date 05/06/2015
+ */
+public class BonusException extends Exception {
+    public BonusException(String s) {
+        super(s);
     }
 }

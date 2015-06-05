@@ -1,4 +1,4 @@
-package fr.upem.ir1.curvysnake.controller;
+package fr.upem.ir1.curvysnake.controller.core;
 
 import javax.naming.TimeLimitExceededException;
 
@@ -15,10 +15,10 @@ import javax.naming.TimeLimitExceededException;
  * <li>Erase all body element</li>
  * </ol>
  */
-public class Bonus {
+public class Bonus implements Cloneable {
 
     /**
-     * Default duration of the
+     * Default duration of the Bonus
      */
     private int duration = 5;
 
@@ -31,11 +31,11 @@ public class Bonus {
 
     private boolean eraseAll = false;
 
-    public Bonus() {
+    private Bonus() {
         this.duration = 5;
     }
 
-    public Bonus(Bonus b) {
+    private Bonus(Bonus b) {
         this.duration = b.duration;
 
         this.speed = b.speed;
@@ -181,5 +181,11 @@ public class Bonus {
                        ", inverseDirection=" + inverseDirection +
                        ", eraseAll=" + eraseAll +
                        '}';
+    }
+
+    @Override
+    public Object clone() {
+        Object b = new Bonus(this);
+        return b;
     }
 }

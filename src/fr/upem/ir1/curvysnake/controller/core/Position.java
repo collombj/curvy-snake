@@ -24,7 +24,7 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller;
+package fr.upem.ir1.curvysnake.controller.core;
 
 /**
  * This class consist to manipulate a position. The position is caracterized by an <code>x</code> and an <code>y</code>.
@@ -124,7 +124,7 @@ public class Position {
 
     /**
      * Method to calculate the square of the distance between two point.
-     *
+     * <p>
      * <p><strong>Warning:</strong> The return value is the <strong>square</strong> of the distance</p>
      *
      * @param p The other point uses for calculate the square of distance.
