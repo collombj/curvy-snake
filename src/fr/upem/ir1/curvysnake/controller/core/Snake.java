@@ -31,6 +31,7 @@ import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
 import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
 
 import javax.naming.TimeLimitExceededException;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.Collections;
@@ -188,8 +189,11 @@ public class Snake {
      * @throws BonusException         If the BonusListInGame is not set
      * @see Movement
      */
-    public List<Ellipse2D.Float> move() throws CollisionException, IllegalAccessException, GameSizeException,
-                                                       BonusException {
+    public List<Ellipse2D.Float> move(List<Ellipse2D.Float> added) throws CollisionException, IllegalAccessException, GameSizeException,
+                                                       BonusException,IllegalArgumentException {
+    	if(added==null) 
+    		throw new IllegalArgumentException();
+    	
         List<Ellipse2D.Float> result = new LinkedList<>();
 
         int speedBonus = defaultSpeed;
@@ -216,7 +220,7 @@ public class Snake {
                 nextHope = 0;
 
             result.add(this.movement.move(this.getDirection(), sizeBonus, nextHope, wallThrough));
-
+            added.add(this.getHead());
             result.addAll(this.detectBonus());
         }
 

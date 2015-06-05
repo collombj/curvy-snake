@@ -32,7 +32,8 @@ public class Demo {
     }
 
     public static void main(String[] args) {
-        Application.run(Color.ORANGE, context -> {
+    	
+        Application.run(Color.WHITE, context -> {
 
             // get the size of the screen
             ScreenInfo screenInfo = context.getScreenInfo();

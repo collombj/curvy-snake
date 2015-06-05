@@ -27,11 +27,11 @@
 package fr.upem.ir1.curvysnake;
 
 import fr.upem.ir1.curvysnake.controller.MultiPlayer;
-import fr.upem.ir1.curvysnake.controller.SinglePlayer;
 import fr.upem.ir1.curvysnake.controller.core.Bonus;
 import fr.upem.ir1.curvysnake.controller.core.BonusListInGame;
 import fr.upem.ir1.curvysnake.controller.core.Snake;
 import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
+import fr.upem.ir1.curvysnake.view.SinglePlayer;
 
 import java.awt.*;
 
