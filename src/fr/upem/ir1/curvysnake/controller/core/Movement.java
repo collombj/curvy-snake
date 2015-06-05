@@ -46,7 +46,7 @@ class Movement {
     /**
      * Default diameter size of a body element.
      */
-    private static final int defaultDiameter = 10;
+    public static final int defaultDiameter = 10;
     /**
      * The border limit minimum of the movement (allowed - include)
      */

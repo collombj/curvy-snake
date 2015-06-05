@@ -48,7 +48,7 @@ public class SinglePlayer {
         // Set Bonus List
         Snake.setBonusListInGame(bonusListInGame);
 
-        Snake player1 = new Snake(new Point((int) gameSize.getCenterX(), (int) gameSize.getCenterY()), new Point(1, 1));
+        Snake player1 = new Snake(new Point((int) gameSize.getCenterX(), (int) gameSize.getCenterY()), 0);
 
         // Display the first position
         System.out.println(player1);

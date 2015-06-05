@@ -25,7 +25,7 @@ public class BonusListInGame {
     /**
      * Default size of the radius action
      */
-    private final static int DEFAULT_DIAMETER = 10;
+    private final static int DEFAULT_DIAMETER = Movement.defaultDiameter;
 
     /**
      * Constructor by default to avoid warning..

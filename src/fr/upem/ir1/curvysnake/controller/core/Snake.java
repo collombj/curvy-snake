@@ -33,7 +33,9 @@ import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
 import javax.naming.TimeLimitExceededException;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -55,11 +57,9 @@ import java.util.List;
 public class Snake {
 
     /**
-     * List of direction offer by the movement.
+     * Aplha angle for the direction
      */
-    private static final List<Point> DIRECTION_LIST = Arrays.asList(new Point(-1, -1), new Point(-1, 0), new Point(-1, 1),
-                                                                    new Point(0, 1), new Point(1, 1), new Point(1, 0),
-                                                                    new Point(1, -1), new Point(0, -1));
+    private int alpha = 0;
     /**
      * List of Snake actually in the race.
      */
@@ -81,23 +81,20 @@ public class Snake {
      * Bonus list active on snake.
      */
     private final List<Bonus> bonusList = new LinkedList<>();
-    /**
-     * Represent the ID/position in the List of the actual direction of the
-     * Snake.
-     */
-    private int actualDirection;
 
     /**
      * Constructor of the class. Initialize the initial position and direction.
      *
-     * @param init      The initial position of the Snake.
-     * @param direction The initial direction of the Snake.
+     * @param init  The initial position of the Snake.
+     * @param alpha The initial alpha direction of the Snake.
+     *
+     * @throws IllegalArgumentException If the alpha angle is outside the limit (0 - 180).
      */
-    public Snake(Point init, Point direction) {
-        this.actualDirection = DIRECTION_LIST.indexOf(direction);
+    public Snake(Point init, int alpha) throws IllegalArgumentException {
+        if(Math.abs(alpha) > 180)
+            throw new IllegalArgumentException();
 
-        if(this.actualDirection == -1)
-            this.actualDirection = 5;
+        this.alpha = alpha;
 
         this.movement = new Movement(init);
 
@@ -218,7 +215,7 @@ public class Snake {
             if(i != 0)
                 nextHope = 0;
 
-            result.add(this.movement.move(DIRECTION_LIST.get(this.actualDirection), sizeBonus, nextHope, wallThrough));
+            result.add(this.movement.move(this.getDirection(), sizeBonus, nextHope, wallThrough));
 
             result.addAll(this.detectBonus());
         }
@@ -272,15 +269,15 @@ public class Snake {
         }
 
         if(m == MoveTo.LEFT) {
-            this.actualDirection--;
+            this.alpha--;
 
-            if(this.actualDirection < 0)
-                this.actualDirection = DIRECTION_LIST.size() - 1;
+            if(this.alpha < -180)
+                this.alpha = 179;
         } else if(m == MoveTo.RIGHT) {
-            this.actualDirection++;
+            this.alpha++;
 
-            if(this.actualDirection >= DIRECTION_LIST.size())
-                this.actualDirection = 0;
+            if(this.alpha >= -179)
+                this.alpha = 0;
         }
     }
 
@@ -352,6 +349,13 @@ public class Snake {
         s.deleteCharAt(s.length() - 1);
 
         return s.toString();
+    }
+
+    public Point getDirection() {
+        double x = Math.acos(this.alpha) * Movement.defaultDiameter/2;
+        double y = Math.asin(this.alpha) * Movement.defaultDiameter/2;
+
+        return new Point((int)x, (int)y);
     }
 
     /**
