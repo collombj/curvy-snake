@@ -1,6 +1,8 @@
-package fr.upem.ir1.curvysnake.controller.core;
+package fr.upem.ir1.curvysnake.controller;
 
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +22,7 @@ public class BonusListInGame {
     /**
      * List of Bonus associated to a position(and a radius - Ellipse2D.Float)
      */
-    private final LinkedList<Entry<Ellipse2D.Float, Bonus>> bonusPosition;
+    private final LinkedList<Entry<Shape, Bonus>> bonusPosition;
 
     /**
      * Default size of the radius action
@@ -34,6 +36,11 @@ public class BonusListInGame {
         this.bonusPosition = new LinkedList<>();
     }
 
+    /**
+     * Constructor to recreate a new BonusList from an existing one.
+     *
+     * @param b The BonusList to duplicate.
+     */
     public BonusListInGame(BonusListInGame b) {
         this.bonusPosition = b.bonusPosition;
     }
@@ -44,7 +51,7 @@ public class BonusListInGame {
      * @param position The Bonus Ellipse
      * @param bonus    Bonus at the position
      */
-    public void add(Ellipse2D.Float position, Bonus bonus) {
+    public void add(Shape position, Bonus bonus) {
         this.bonusPosition.add(new Entry<>(position, bonus));
     }
 
@@ -55,15 +62,15 @@ public class BonusListInGame {
      *
      * @return Return a LinkedList<Bonus> hited by the Snake. If no bonus was hited, return null.
      */
-    public List<Entry<Ellipse2D.Float, Bonus>> get(Ellipse2D.Float head) {
-        LinkedList<Entry<Ellipse2D.Float, Bonus>> result = new LinkedList<>();
-        Ellipse2D.Float key;
+    public List<Entry<Shape, Bonus>> get(Ellipse2D.Float head) {
+        LinkedList<Entry<Shape, Bonus>> result = new LinkedList<>();
+        Shape key;
 
         // If multiple bonus are close, the detection is ok
-        for(Entry<Ellipse2D.Float, Bonus> entry : this.bonusPosition) {
+        for(Entry<Shape, Bonus> entry : this.bonusPosition) {
             key = entry.getKey();
 
-            if(head.intersects(key.x, key.y, key.width, key.height)) {
+            if(head.intersects(key.getBounds().x, key.getBounds().y, key.getBounds().width, key.getBounds().height)) {
                 result.add(entry);
                 this.bonusPosition.remove(entry);
             }
@@ -75,35 +82,47 @@ public class BonusListInGame {
             return result;
     }
 
-    public Ellipse2D.Float randomPosition() {
+    /**
+     * Method to create randomly (position and bonus type).
+     *
+     * @return The position of the new Bonus.
+     */
+    public Shape randomPosition() {
         Random r = new Random();
 
         int x;
         int y;
-        Ellipse2D.Float position = null;
+        Shape position = null;
 
-        do {
+       /* do {
             x = r.nextInt(Snake.getGameSize().width) + Snake.getGameSize().x;
             y = r.nextInt(Snake.getGameSize().height) + Snake.getGameSize().y;
 
             position = new Ellipse2D.Float(x, y, DEFAULT_DIAMETER, DEFAULT_DIAMETER);
-        } while(this.intersects(position) || !Snake.positionIsFree(position));
+        } while(this.intersects(position) || !Snake.positionIsFree(position));*/
 
         this.add(position, BonusAvailable.random());
 
         return position;
     }
 
-    public boolean intersects(Ellipse2D.Float aFloat) {
-        for(Entry<Ellipse2D.Float, Bonus> entry : this.bonusPosition) {
-            if(entry.getKey().intersects(aFloat.x, aFloat.y, aFloat.width, aFloat.height))
+    /**
+     * Method to detect if two Bonus are intersects.
+     *
+     * @param positionShape The Ellipse to test with the BonusList.
+     *
+     * @return True if an intersection is realized, false else.
+     */
+    public boolean intersects(Shape positionShape) {
+        for(Entry<Shape, Bonus> entry : this.bonusPosition) {
+            if(entry.getKey().intersects(positionShape.getBounds().x, positionShape.getBounds().y, positionShape.getBounds().width, positionShape.getBounds().height))
                 return true;
         }
 
         return false;
     }
 
-    public void forEach(Consumer<? super Entry<Ellipse2D.Float, Bonus>> action) {
-        this.bonusPosition.forEach(action);
+    public Iterator<Entry<Shape, Bonus>> iterator() {
+        return this.bonusPosition.iterator();
     }
 }

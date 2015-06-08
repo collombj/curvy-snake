@@ -24,7 +24,7 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller.core;
+package fr.upem.ir1.curvysnake.controller;
 
 /**
  * This class consist to manipulate a position. The position is caracterized by an <code>x</code> and an <code>y</code>.

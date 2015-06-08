@@ -24,13 +24,12 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller.exception;
+package fr.upem.ir1.curvysnake.controller;
 
-/**
- * @author collombj
- * @project EelZen
- * @package fr.upem.ir1.curvysnake.controller.exception
- * @date 05/06/2015
- */
-public class BonusException extends Exception {
+import java.awt.*;
+import java.util.LinkedList;
+
+public class Displayer {
+    public LinkedList<Shape> newShape = new LinkedList<>();
+    public LinkedList<Shape> oldShape = new LinkedList<>();
 }

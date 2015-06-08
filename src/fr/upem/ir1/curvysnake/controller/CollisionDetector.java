@@ -24,13 +24,14 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller.exception;
+package fr.upem.ir1.curvysnake.controller;
 
 /**
  * @author collombj
  * @project EelZen
- * @package fr.upem.ir1.curvysnake.controller.exception
- * @date 05/06/2015
+ * @package fr.upem.ir1.curvysnake.controller
+ * @date 06/06/2015
  */
-public class BonusException extends Exception {
+public interface CollisionDetector<T> {
+    boolean detect(T element);
 }

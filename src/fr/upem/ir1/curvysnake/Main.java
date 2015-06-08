@@ -26,21 +26,32 @@
 
 package fr.upem.ir1.curvysnake;
 
-import fr.upem.ir1.curvysnake.controller.MultiPlayer;
-import fr.upem.ir1.curvysnake.controller.core.Bonus;
-import fr.upem.ir1.curvysnake.controller.core.BonusListInGame;
-import fr.upem.ir1.curvysnake.controller.core.Snake;
-import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
-import fr.upem.ir1.curvysnake.view.SinglePlayer;
+import fr.upem.ir1.curvysnake.controller.BonusListInGame;
+import fr.upem.ir1.curvysnake.controller.Game;
+import fr.upem.ir1.curvysnake.controller.Snake;
 
 import java.awt.*;
+import java.util.LinkedList;
 
 public class Main {
 
     public static void main(String[] args) {
-        if(args.length == 1 && (args[0].equals("multiplayer") || args[0].equals("--multiplayer")))
+        /*if(args.length == 1 && (args[0].equals("multiplayer") || args[0].equals("--multiplayer")))
             MultiPlayer.run();
         else
-            SinglePlayer.run();
+            SinglePlayer.run();*/
+
+        Rectangle gameSize = new Rectangle(0, 0, 500, 500);
+        BonusListInGame bonusList = new BonusListInGame();
+        LinkedList<Snake> snakeList = new LinkedList<>();
+
+        Game.setGameSize(gameSize);
+        Game.setBonus(bonusList);
+        Game.setSnakes(snakeList);
+
+        Snake s1 = new Snake(new Point(200, 200), 0);
+        snakeList.add(s1);
+        s1.move(Game.snakesCollision(), Game.wallCollision(), Game::getBonus);
+        System.out.println(s1);
     }
 }
