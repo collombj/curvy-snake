@@ -29,6 +29,14 @@ package fr.upem.ir1.curvysnake.controller;
 
 import java.util.Random;
 
+/**
+ * Enum representing a list of Bonus Type. It is offering a List of good and bad Bonus. It is represent by Enum (for
+ * the name associated with an instance of Bonus). It offering some special action to manipulate this list.
+ *
+ * @author COLLOMB Jérémie
+ * @author GRISET  Valentin
+ * @see Bonus
+ */
 public enum BonusAvailable {
     SPEED_INCREASE(Bonus.speed(5)),
     SPEED_DECREASE(Bonus.speed(-5)),
@@ -51,16 +59,34 @@ public enum BonusAvailable {
     };
 
 
+    /**
+     * Bonus action represent by the Enum.
+     */
     private final Bonus bonus;
 
+    /**
+     * Constructor of the Enum value. It associate a Bonus name, to a Bonus Action.
+     *
+     * @param bonus The Bonus associated to the Name (Enum).
+     */
     BonusAvailable(Bonus bonus) {
         this.bonus = bonus;
     }
 
+    /**
+     * Method to get a new instance of this type of Bonus.
+     *
+     * @return The clone of this Bonus instance.
+     */
     public Bonus get() {
         return (Bonus) bonus.clone();
     }
 
+    /**
+     * Return a random Bonus clone available in the Bonus type list.
+     *
+     * @return A random Bonus.
+     */
     public static Bonus random() {
         Random r = new Random();
 

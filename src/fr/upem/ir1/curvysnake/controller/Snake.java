@@ -218,6 +218,7 @@ public class Snake {
      * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
      * @throws GameSizeException      If the GameSize is not set
      * @throws BonusException         If the BonusListInGame is not set
+     * @throws IllegalArgumentException If "added" is null.
      * @see Movement
      */
     public List<Ellipse2D.Float> move(List<Ellipse2D.Float> added) throws CollisionException, IllegalAccessException, GameSizeException,
