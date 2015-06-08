@@ -31,21 +31,14 @@ import fr.umlv.zen5.ApplicationContext;
 import fr.umlv.zen5.Event;
 import fr.umlv.zen5.ScreenInfo;
 import fr.umlv.zen5.Event.Action;
-import fr.upem.ir1.curvysnake.controller.core.BonusListInGame;
-import fr.upem.ir1.curvysnake.controller.core.Snake;
-import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
-
-
+import fr.upem.ir1.curvysnake.controller.BonusListInGame;
+import fr.upem.ir1.curvysnake.controller.Snake;
 
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
-
-
-import com.sun.org.apache.xml.internal.security.Init;
 
 /**
  * @author collombj

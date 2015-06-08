@@ -24,7 +24,7 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller;
+package fr.upem.ir1.curvysnake.view;
 
 /**
  * @author collombj

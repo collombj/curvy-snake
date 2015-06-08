@@ -24,14 +24,14 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller.core;
+package fr.upem.ir1.curvysnake.controller;
 
 import fr.upem.ir1.curvysnake.controller.exception.BonusException;
 import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
 import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
+import fr.upem.ir1.curvysnake.controller.MoveTo;
 
 import javax.naming.TimeLimitExceededException;
-
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.util.Collections;
@@ -44,7 +44,7 @@ import java.util.List;
  * also the user steering action.
  * <p>
  * <p>
- * The class Store 2 Informations :
+ * The class Store 2 Information :
  * <ol>
  * <li>The body management</li>
  * <li>The direction management</li>
@@ -54,11 +54,12 @@ import java.util.List;
  * @author COLLOMB Jérémie
  * @author GRISET Valentin
  * @see Movement
+ * @see BonusListInGame
  */
 public class Snake {
 
     /**
-     * Aplha angle for the direction
+     * Aplha angle for the direction. It is a degree angle.
      */
     private int alpha = 0;
     /**
@@ -86,12 +87,14 @@ public class Snake {
     /**
      * Constructor of the class. Initialize the initial position and direction.
      *
-     * @param init  The initial position of the Snake.
-     * @param alpha The initial alpha direction of the Snake.
+     * @param init          The initial position of the Snake.
+     * @param alpha         The initial alpha direction of the Snake.
+     * @param inStorageList The boolean to store (or not) the reference of the Snake in the static list of collision
+     *                      detection.
      *
-     * @throws IllegalArgumentException If the alpha angle is outside the limit (0 - 180).
+     * @throws IllegalArgumentException If the alpha angle is outside the limit (0 - 180 -- +/-).
      */
-    public Snake(Point init, int alpha) throws IllegalArgumentException {
+    public Snake(Point init, int alpha, boolean inStorageList) throws IllegalArgumentException {
         if(Math.abs(alpha) > 180)
             throw new IllegalArgumentException();
 
@@ -99,7 +102,33 @@ public class Snake {
 
         this.movement = new Movement(init);
 
-        SNAKE_LIST.add(this);
+        if(inStorageList)
+            SNAKE_LIST.add(this);
+    }
+
+    /**
+     * Constructor of the class. Initialize the initial position and direction. The Snake is not store in the main
+     * list of Snake (used for Snake collision).
+     *
+     * @param init  The initial position of the Snake.
+     * @param alpha The initial alpha direction of the Snake.
+     *
+     * @throws IllegalArgumentException If the alpha angle is outside the limit (0 - 180 -- +/-).
+     */
+    public Snake(Point init, int alpha) throws IllegalArgumentException {
+        this(init, alpha, false);
+    }
+
+    /**
+     * Destructor of the reference in the Snake list. You need to used it, if the Snake is store for collision
+     * detection. But if this Snake is not used in collision detection, the method is useless.
+     *
+     * @param s The Snake to remove from the list of the Snake.
+     *
+     * @return True if the remove action is successful, false else.
+     */
+    public static boolean destroy(Snake s) {
+        return SNAKE_LIST.remove(s);
     }
 
     /**
@@ -139,21 +168,21 @@ public class Snake {
     }
 
     /**
-     * Method to clean all Snake trace.
+     * Method to clean all Snake trace. This action keep only the head of the Snakes.
      */
     private static void cleanAll() {
-        SNAKE_LIST.forEach(fr.upem.ir1.curvysnake.controller.core.Snake::clean);
+        SNAKE_LIST.forEach(Snake::clean);
     }
 
     /**
      * Method to decrement all Snake bonus.
      */
     public static void decrementAll() {
-        SNAKE_LIST.forEach(fr.upem.ir1.curvysnake.controller.core.Snake::decrement);
+        SNAKE_LIST.forEach(Snake::decrement);
     }
 
     /**
-     * Method to detect if a Position is not used by a Snake body element. The
+     * Method to detect if a position is not used by a Snake body element. The
      *
      * @param position The position to test with all Snake.
      *
@@ -181,6 +210,8 @@ public class Snake {
     /**
      * Move the Snake
      *
+     * @param added The list of element added with the snake body.
+     *
      * @return The last deleted position, or null if no position was deleted.
      *
      * @throws CollisionException     If collision with a wall or a snake (another or itself) is detected.
@@ -190,10 +221,10 @@ public class Snake {
      * @see Movement
      */
     public List<Ellipse2D.Float> move(List<Ellipse2D.Float> added) throws CollisionException, IllegalAccessException, GameSizeException,
-                                                       BonusException,IllegalArgumentException {
-    	if(added==null) 
-    		throw new IllegalArgumentException();
-    	
+                                                                                  BonusException, IllegalArgumentException {
+        if(added == null)
+            throw new IllegalArgumentException();
+
         List<Ellipse2D.Float> result = new LinkedList<>();
 
         int speedBonus = defaultSpeed;
@@ -254,7 +285,7 @@ public class Snake {
      * Action of the user to change (<code>LEFT</code> or <code>RIGHT</code>) the direction (step by step only). The
      * direction is managed by the bonus action too.
      *
-     * @param m The movement realize by the user
+     * @param m The movement realize by the user (LEFT or RIGHT only).
      *
      * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
      */
@@ -296,9 +327,11 @@ public class Snake {
         if(b == null)
             return;
 
-        if(b.eraseAll())
+        if(b.eraseAll()) {
+            // TODO revoir cette partie en fonction des modifications
             Snake.cleanAll();
-        else
+            this.clean();
+        } else
             this.bonusList.add(b);
     }
 
@@ -340,36 +373,37 @@ public class Snake {
      * Clean the Body element. Keep only the head of the body
      */
     public void clean() {
+        //TODO revoir le système de nettoyage
         this.movement.clean();
     }
 
+    /**
+     * Method to create a point direction from an alpha angle (degree).
+     *
+     * @return The Point which is representing the direction.
+     */
+    public Point getDirection() {
+        double x = Math.acos(this.alpha) * Movement.defaultDiameter / 3;
+        double y = Math.asin(this.alpha) * Movement.defaultDiameter / 3;
+
+        return new Point((int) x, (int) y);
+    }
+
+    /**
+     * Method to display the Snake trace. TEST ONLY
+     *
+     * @return The String representation of the Snake
+     */
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append("Snake: ");
+
         this.getMove().forEach((ellipse2D) -> {
             s.append("(" + ellipse2D.getCenterX() + ", " + ellipse2D.getCenterY() + ", " + ellipse2D.getWidth() / 2 + "), ");
         });
         s.deleteCharAt(s.length() - 1);
 
         return s.toString();
-    }
-
-    public Point getDirection() {
-        double x = Math.acos(this.alpha) * Movement.defaultDiameter/2;
-        double y = Math.asin(this.alpha) * Movement.defaultDiameter/2;
-
-        return new Point((int)x, (int)y);
-    }
-
-    /**
-     * Enum to list the two possibilities of action :
-     * <ul>
-     * <li>Go to the <code>LEFT</code></li>
-     * <li>Go to the <code>RIGHT</code></li>
-     * </ul>
-     */
-    public enum MoveTo {
-        LEFT, RIGHT
     }
 }

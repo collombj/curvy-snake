@@ -24,7 +24,7 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller.core;
+package fr.upem.ir1.curvysnake.controller;
 
 import java.util.Map;
 
