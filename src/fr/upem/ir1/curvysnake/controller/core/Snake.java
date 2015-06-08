@@ -68,7 +68,7 @@ public class Snake {
     /**
      * Speed of the snake.
      */
-    private final static int defaultSpeed = 10;
+    private final static int defaultSpeed = 1;
     /**
      * List of Bonus actually in game.
      */
@@ -273,15 +273,19 @@ public class Snake {
         }
 
         if(m == MoveTo.LEFT) {
-            this.alpha--;
+            this.alpha+=5;
 
-            if(this.alpha < -180)
-                this.alpha = 179;
+            
+            if(this.alpha >=360){
+            	this.alpha=0;
+            }
+             
         } else if(m == MoveTo.RIGHT) {
-            this.alpha++;
+            this.alpha-=5;
 
-            if(this.alpha >= -179)
-                this.alpha = 0;
+            if(this.alpha<=-360){
+            	this.alpha=0;
+            }
         }
     }
 
@@ -356,9 +360,8 @@ public class Snake {
     }
 
     public Point getDirection() {
-        double x = Math.acos(this.alpha) * Movement.defaultDiameter/2;
-        double y = Math.asin(this.alpha) * Movement.defaultDiameter/2;
-
+        double x = Math.cos(this.alpha*0.017453292519943)*Movement.defaultDiameter/2;
+        double y = Math.sin(this.alpha*0.017453292519943)*Movement.defaultDiameter/2;
         return new Point((int)x, (int)y);
     }
 
