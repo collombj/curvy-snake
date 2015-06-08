@@ -24,7 +24,7 @@
  *
  */
 
-package fr.upem.ir1.curvysnake.controller.core;
+package fr.upem.ir1.curvysnake.controller;
 
 import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
 import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
@@ -67,8 +67,8 @@ class Movement {
      */
     Movement(Point init) {
         Ellipse2D.Float aFloat = new Ellipse2D.Float((float) init.x - defaultDiameter / 2,
-                                                        (float) init.y - defaultDiameter / 2,
-                                                        defaultDiameter, defaultDiameter);
+                                                     (float) init.y - defaultDiameter / 2,
+                                                     defaultDiameter, defaultDiameter);
         this.move.add(aFloat);
     }
 
@@ -136,7 +136,7 @@ class Movement {
      *
      * @param position The Ellipse2D.Float to test with this Snake body.
      *
-     * @return True if an insersection is detected, false else.
+     * @return True if an intersection is detected, false else.
      */
     boolean intersects(Ellipse2D.Float position) {
         for(Ellipse2D.Float aFloat : this.move) {
@@ -155,7 +155,7 @@ class Movement {
      *
      * @return True if the Snake head hit another snake, false else.
      */
-    private boolean intersects(LinkedList<Ellipse2D.Float> bodyList) {
+    public boolean intersects(LinkedList<Ellipse2D.Float> bodyList) {
         Ellipse2D.Float head = this.getHead();
 
         boolean himself = false;
@@ -182,10 +182,10 @@ class Movement {
      * @throws GameSizeException If the GameSize is not set.
      */
     public boolean isHittingTheWall() throws GameSizeException {
-        Ellipse2D.Float head = this.getHead();
-
         if(gameSize == null)
             throw new GameSizeException();
+
+        Ellipse2D.Float head = this.getHead();
         return !gameSize.contains(head.x, head.y, head.width, head.height);
     }
 
@@ -204,7 +204,9 @@ class Movement {
      * @throws CollisionException If collision with a wall or a snake (another or itself) is detected.
      * @throws GameSizeException  If the GameSize is not set
      */
-    public Ellipse2D.Float move(Point direction, int size, int nextHope, boolean wallThrough) throws CollisionException, GameSizeException {
+    public Ellipse2D.Float move(Point direction, int size, int nextHope, boolean wallThrough) throws
+            CollisionException, GameSizeException {
+
         Rectangle nextHead = this.move.getLast().getBounds();
 
         // Set the new size of the body element
@@ -251,8 +253,13 @@ class Movement {
      * Method to move the head of the body to the opposite position when it hit a wall.
      *
      * @param head The head of the body which is edited.
+     *
+     * @throws GameSizeException If the GameSize is not set
      */
-    private void throughWall(Ellipse2D.Float head) {
+    public void throughWall(Ellipse2D.Float head) throws GameSizeException {
+        if(gameSize == null)
+            throw new GameSizeException();
+
         if(head.x < gameSize.x) {
             head.x = gameSize.x + gameSize.width - 1;
         }
@@ -272,13 +279,9 @@ class Movement {
      * Clean the Body element. Keep only the head of the body
      */
     public void clean() {
+        // TODO Améliorer le nettoyage
         Ellipse2D.Float head = this.move.getLast();
         this.move.clear();
         this.move.add(head);
-    }
-
-    @Override
-    public String toString() {
-        return "Movement{move=" + move + '}';
     }
 }

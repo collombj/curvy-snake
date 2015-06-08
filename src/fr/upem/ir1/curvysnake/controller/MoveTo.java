@@ -24,17 +24,18 @@
  *
  */
 
-package fr.upem.ir1.curvysnake;
+package fr.upem.ir1.curvysnake.controller;
 
-import fr.upem.ir1.curvysnake.view.MultiPlayer;
-import fr.upem.ir1.curvysnake.view.SinglePlayer;
-
-public class Main {
-
-    public static void main(String[] args) {
-        if(args.length == 1 && (args[0].equals("multiplayer") || args[0].equals("--multiplayer")))
-            MultiPlayer.run();
-        else
-            SinglePlayer.run();
-    }
+/**
+ * Enum to list the two possibilities of movement action :
+ * <ul>
+ * <li>Go to the <code>LEFT</code></li>
+ * <li>Go to the <code>RIGHT</code></li>
+ * </ul>
+ *
+ * @author COLLOMB Jérémie
+ * @author GRISET  Valentin
+ */
+public enum MoveTo {
+    LEFT, RIGHT
 }

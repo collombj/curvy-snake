@@ -1,4 +1,4 @@
-package fr.upem.ir1.curvysnake.controller.core;
+package fr.upem.ir1.curvysnake.controller;
 
 import javax.naming.TimeLimitExceededException;
 
@@ -18,23 +18,49 @@ import javax.naming.TimeLimitExceededException;
 public class Bonus implements Cloneable {
 
     /**
-     * Default duration of the Bonus
+     * Default duration of the Bonus.
      */
     private int duration = 5;
 
+    /**
+     * Speed bonus.
+     */
     private int speed = 0;
+    /**
+     * Size bonus.
+     */
     private int size = 0;
+    /**
+     * Distance between the previous head and the new head.
+     */
     private int nextHope = 0;
 
+    /**
+     * Allow the Snake to through a wall, or not.
+     */
     private boolean wallThrough = false;
+    /**
+     * Inverse button direction.
+     */
     private boolean inverseDirection = false;
 
+    /**
+     * Bonus to eraseAll body (except the head) of all Snake.
+     */
     private boolean eraseAll = false;
 
+    /**
+     * Default constructor. Initialize the time duration to 5.
+     */
     private Bonus() {
         this.duration = 5;
     }
 
+    /**
+     * Constructor to duplicate a previous Bonus instance. (Only used to clone())
+     *
+     * @param b Bonus to duplicate.
+     */
     private Bonus(Bonus b) {
         this.duration = b.duration;
 
@@ -48,6 +74,13 @@ public class Bonus implements Cloneable {
         this.eraseAll = b.eraseAll;
     }
 
+    /**
+     * Method to create a new instance of Bonus with a speed attributes (only).
+     *
+     * @param speed The speed Bonus.
+     *
+     * @return A new instance of Bonus, with a speed.
+     */
     public static Bonus speed(int speed) {
         Bonus b = new Bonus();
         b.speed = speed;
@@ -55,6 +88,13 @@ public class Bonus implements Cloneable {
         return b;
     }
 
+    /**
+     * Method to create a new instance of Bonus with a size attributes (only).
+     *
+     * @param size The size Bonus.
+     *
+     * @return A new instance of Bonus, with a size.
+     */
     public static Bonus size(int size) {
         Bonus b = new Bonus();
         b.size = size;
@@ -62,6 +102,13 @@ public class Bonus implements Cloneable {
         return b;
     }
 
+    /**
+     * Method to create a new instance of Bonus with a nextHope attributes (only).
+     *
+     * @param nextHope The nextHope Bonus.
+     *
+     * @return A new instance of Bonus, with a nextHope.
+     */
     public static Bonus nextHope(int nextHope) {
         Bonus b = new Bonus();
         b.nextHope = nextHope;
@@ -69,6 +116,13 @@ public class Bonus implements Cloneable {
         return b;
     }
 
+    /**
+     * Method to create a new instance of Bonus with a wall through attributes (only).
+     *
+     * @param wallThrough The wall through Bonus.
+     *
+     * @return A new instance of Bonus, with a wall through.
+     */
     public static Bonus wallThrough(boolean wallThrough) {
         Bonus b = new Bonus();
         b.wallThrough = wallThrough;
@@ -76,6 +130,13 @@ public class Bonus implements Cloneable {
         return b;
     }
 
+    /**
+     * Method to create a new instance of Bonus with an inverse direction attributes (only).
+     *
+     * @param inverseDirection The inverse direction Bonus.
+     *
+     * @return A new instance of Bonus, with an inverse direction.
+     */
     public static Bonus inverseDirection(boolean inverseDirection) {
         Bonus b = new Bonus();
         b.inverseDirection = inverseDirection;
@@ -83,6 +144,13 @@ public class Bonus implements Cloneable {
         return b;
     }
 
+    /**
+     * Method to create a new instance of Bonus with an erase all attributes (only).
+     *
+     * @param eraseAll The erase all Bonus.
+     *
+     * @return A new instance of Bonus, with an erase all.
+     */
     public static Bonus eraseAll(boolean eraseAll) {
         Bonus b = new Bonus();
         b.eraseAll = eraseAll;
@@ -90,39 +158,80 @@ public class Bonus implements Cloneable {
         return b;
     }
 
-    public Bonus duplicate() {
-        return new Bonus(this);
-    }
-
+    /**
+     * Method to get the speed attribute value.
+     *
+     * @return The speed value.
+     *
+     * @throws IllegalAccessException If the bonus is an eraseAll bonus.
+     */
     public int speed() throws IllegalAccessException {
         if(this.eraseAll) throw new IllegalAccessException();
         return this.speed;
     }
 
+    /**
+     * Method to get the size attribute value.
+     *
+     * @return The size value.
+     *
+     * @throws IllegalAccessException If the bonus is an eraseAll bonus.
+     */
     public int size() throws IllegalAccessException {
         if(this.eraseAll) throw new IllegalAccessException();
         return this.size;
     }
 
+    /**
+     * Method to get the nextHope attribute value.
+     *
+     * @return The nextHope value.
+     *
+     * @throws IllegalAccessException If the bonus is an eraseAll bonus.
+     */
     public int nextHope() throws IllegalAccessException {
         if(this.eraseAll) throw new IllegalAccessException();
         return this.nextHope;
     }
 
+    /**
+     * Method to get the wallThrough attribute value.
+     *
+     * @return The wallThrough value.
+     *
+     * @throws IllegalAccessException If the bonus is an eraseAll bonus.
+     */
     public boolean wallThrough() throws IllegalAccessException {
         if(this.eraseAll) throw new IllegalAccessException();
         return this.wallThrough;
     }
 
+    /**
+     * Method to get the inverseDirection attribute value.
+     *
+     * @return The inverseDirection value.
+     *
+     * @throws IllegalAccessException If the bonus is an eraseAll bonus.
+     */
     public boolean inverseDirection() throws IllegalAccessException {
         if(this.eraseAll) throw new IllegalAccessException();
         return this.inverseDirection;
     }
 
+    /**
+     * Method to get the eraseAll attribute value.
+     *
+     * @return The eraseAll value.
+     */
     public boolean eraseAll() {
         return this.eraseAll;
     }
 
+    /**
+     * Decrement time of this Bonus.
+     *
+     * @throws TimeLimitExceededException If a Bonus have it own time under 0.
+     */
     public void decrement() throws TimeLimitExceededException {
         this.duration--;
 
@@ -131,16 +240,35 @@ public class Bonus implements Cloneable {
         }
     }
 
+    /**
+     * Method to get the duration of this Bonus.
+     *
+     * @return The duration.
+     */
     public int getDuration() {
         return duration;
     }
 
+    /**
+     * Method to set the duration of a Bonus.
+     *
+     * @param duration The new duration
+     *
+     * @return The Bonus to offer a chain action.
+     */
     public Bonus setDuration(int duration) {
         this.duration = duration;
 
         return this;
     }
 
+    /**
+     * Method equals to compare an object with this Bonus.
+     *
+     * @param o The object to compare with this Bonus
+     *
+     * @return True if the object is equals to this Bonus, false else.
+     */
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;
@@ -158,6 +286,11 @@ public class Bonus implements Cloneable {
 
     }
 
+    /**
+     * Hashcode method.
+     *
+     * @return The Hash of this Bonus.
+     */
     @Override
     public int hashCode() {
         int result = duration;
@@ -170,6 +303,22 @@ public class Bonus implements Cloneable {
         return result;
     }
 
+    /**
+     * Clone method to duplicate the Bonus.
+     *
+     * @return The Bonus duplicated.
+     */
+    @Override
+    public Object clone() {
+        Object b = new Bonus(this);
+        return b;
+    }
+
+    /**
+     * Method to display the Bonus. TEST ONLY
+     *
+     * @return The String representation of the Bonus.
+     */
     @Override
     public String toString() {
         return "Bonus{" +
@@ -181,11 +330,5 @@ public class Bonus implements Cloneable {
                        ", inverseDirection=" + inverseDirection +
                        ", eraseAll=" + eraseAll +
                        '}';
-    }
-
-    @Override
-    public Object clone() {
-        Object b = new Bonus(this);
-        return b;
     }
 }

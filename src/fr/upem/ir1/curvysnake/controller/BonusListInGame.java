@@ -1,4 +1,4 @@
-package fr.upem.ir1.curvysnake.controller.core;
+package fr.upem.ir1.curvysnake.controller;
 
 import java.awt.geom.Ellipse2D;
 import java.util.LinkedList;
@@ -53,7 +53,7 @@ public class BonusListInGame {
      *
      * @param head THe head of the snake for the detection.
      *
-     * @return Return a LinkedList<Bonus> hited by the Snake. If no bonus was hited, return null.
+     * @return Return a LinkedList<Bonus> hit by the Snake. If no bonus has been hit, return null.
      */
     public List<Entry<Ellipse2D.Float, Bonus>> get(Ellipse2D.Float head) {
         LinkedList<Entry<Ellipse2D.Float, Bonus>> result = new LinkedList<>();
@@ -75,7 +75,12 @@ public class BonusListInGame {
             return result;
     }
 
-    public Ellipse2D.Float randomPosition() {
+    /**
+     * Generate a random position adn a random Bonus into the list of available Bonus.
+     *
+     * @return The position of the new Bonus
+     */
+    public Ellipse2D.Float random() {
         Random r = new Random();
 
         int x;
@@ -94,6 +99,13 @@ public class BonusListInGame {
         return position;
     }
 
+    /**
+     * Method to detect a collision between a Bonus in game and a position.
+     *
+     * @param aFloat The position to test with all Bonus in game.
+     *
+     * @return Tru if a collision is detected, false else.
+     */
     public boolean intersects(Ellipse2D.Float aFloat) {
         for(Entry<Ellipse2D.Float, Bonus> entry : this.bonusPosition) {
             if(entry.getKey().intersects(aFloat.x, aFloat.y, aFloat.width, aFloat.height))
@@ -103,6 +115,11 @@ public class BonusListInGame {
         return false;
     }
 
+    /**
+     * ForEach Method alias for the List of Bonus in Game
+     *
+     * @param action The Consumer to apply to each element pf the Bonus list.
+     */
     public void forEach(Consumer<? super Entry<Ellipse2D.Float, Bonus>> action) {
         this.bonusPosition.forEach(action);
     }
