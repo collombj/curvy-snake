@@ -38,11 +38,11 @@ import java.util.Random;
  * @see Bonus
  */
 public enum BonusAvailable {
-    SPEED_INCREASE(Bonus.speed(5)),
-    SPEED_DECREASE(Bonus.speed(-5)),
+    SPEED_INCREASE(Bonus.speed(1)),
+    SPEED_DECREASE(Bonus.speed(-1)),
     SIZE_INCREASE(Bonus.size(5)),
     SIZE_DECREASE(Bonus.size(-5)),
-    NEXT_HOPE(Bonus.nextHope(5)),
+    NEXT_HOPE(Bonus.nextHope(2).setDuration(1)),
     WALL_THROUGH(Bonus.wallThrough(true)),
     INVERSE_DIRECTION(Bonus.inverseDirection(true)),
     ERASE_ALL(Bonus.eraseAll(true));

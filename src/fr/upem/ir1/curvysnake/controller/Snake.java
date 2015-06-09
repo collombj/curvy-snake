@@ -31,7 +31,9 @@ import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
 import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
 
 import javax.naming.TimeLimitExceededException;
+
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
 import java.util.Collections;
 import java.util.Iterator;
@@ -248,8 +250,11 @@ public class Snake {
         LinkedList<RectangularShape> result = new LinkedList<>();
 
         bonusListInGame.forEach((entry) -> {
-            result.add(entry.getKey());
-            this.addBonus(entry.getValue());
+        	if(entry.getKey().intersects( this.getHead().getBounds())){
+        		result.add(entry.getKey());
+                this.addBonus(entry.getValue());	
+        	}
+            
         });
 
         return result;
@@ -286,7 +291,7 @@ public class Snake {
             else if(m == MoveTo.RIGHT) m = MoveTo.LEFT;
         }
 
-        System.out.println(this.alpha);
+        
         if(m == MoveTo.LEFT) {
             this.alpha += 5;
 
@@ -300,7 +305,7 @@ public class Snake {
                 this.alpha = 0;
             }
         }
-        System.out.println(this.alpha);
+       
     }
 
     /**
@@ -372,7 +377,7 @@ public class Snake {
     public Point getDirection() {
         int x = (int)Math.round(Math.cos(this.alpha * 0.017453292519943) * Movement.defaultDiameter / 2);
         int y = (int)Math.round(Math.sin(this.alpha * 0.017453292519943) * Movement.defaultDiameter / 2);
-        System.out.println(x + ", " + y);
+        
         return new Point(x, y);
     }
 

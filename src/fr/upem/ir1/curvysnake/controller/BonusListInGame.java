@@ -27,7 +27,7 @@ public class BonusListInGame {
     /**
      * Default size of the radius action
      */
-    private final static int DEFAULT_DIAMETER = Movement.defaultDiameter;
+    private final static int DEFAULT_DIAMETER = Movement.defaultDiameter*5;
 
     /**
      * Constructor by default to avoid warning..
@@ -69,6 +69,7 @@ public class BonusListInGame {
                                key.getBounds2D().getWidth(), key.getBounds2D().getHeight())) {
                 result.add(entry);
                 this.bonusPosition.remove(entry);
+                System.out.println("Je tape dans le bonus");
             }
         }
 
@@ -101,7 +102,7 @@ public class BonusListInGame {
         } while(this.intersects(position) || !Snake.positionIsFree(position));
 
         this.add(position, BonusAvailable.random());
-
+        System.out.println(this.bonusPosition.getLast().getValue());
         return position;
     }
 

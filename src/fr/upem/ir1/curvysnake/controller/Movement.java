@@ -212,12 +212,9 @@ class Movement {
         Rectangle nextHead = this.move.getLast().getBounds();
 
         // Set the new size of the body element
-        size += defaultDiameter;
-        if(nextHead.width != size && nextHead.height != size) {
-            nextHead.translate(nextHead.width - size, nextHead.height - size);
-            nextHead.width = size;
-            nextHead.height = size;
-        }
+        size+=defaultDiameter;
+        nextHead.height=size;
+        nextHead.width=size;
 
         // Manage the next hope position
         for(int i = 0 ; i <= nextHope ; i++) {

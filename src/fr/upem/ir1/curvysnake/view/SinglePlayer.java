@@ -29,6 +29,7 @@ package fr.upem.ir1.curvysnake.view;
 import fr.umlv.zen5.*;
 import fr.umlv.zen5.Event;
 import fr.umlv.zen5.Event.Action;
+import fr.upem.ir1.curvysnake.controller.BonusAvailable;
 import fr.upem.ir1.curvysnake.controller.BonusListInGame;
 import fr.upem.ir1.curvysnake.controller.MoveTo;
 import fr.upem.ir1.curvysnake.controller.Snake;
@@ -86,8 +87,6 @@ public class SinglePlayer {
 					Event event = context.pollOrWaitEvent(100);
 					if (event != null) { // no event
 						Action action = event.getAction();
-						System.out.println(event);
-						System.out.println(event.getKey());
 						if(action==Action.KEY_PRESSED){
 							
 						
@@ -109,6 +108,10 @@ public class SinglePlayer {
 									e.printStackTrace();
 								}
 							}
+							if(key==KeyboardKey.Q){
+								context.exit(0);
+			                    return;
+							}
 							
 						}
 						
@@ -122,10 +125,19 @@ public class SinglePlayer {
 						draw(l);
 					}
 					lstIn.clear();
+					
 					for (RectangularShape l :lstOut){
 						undraw(l);
 					}
+					
 					draw(player1.getQueue());
+					
+					
+					drawBonus(bonusListInGame.random());
+					
+					Snake.decrementAll();
+				
+
 					
 				} catch (CollisionException e) {
 					// TODO Auto-generated catch block
@@ -161,5 +173,56 @@ public class SinglePlayer {
 			graphics.setColor(Color.WHITE);
 			graphics.fill(queu);
 		});
+	}
+	private static void drawBonus(RectangularShape bonus){
+		if(bonus==null){
+			return;
+		}
+		if(bonus.equals(BonusAvailable.NEXT_HOPE))
+		context.renderFrame(graphics -> {
+			graphics.setColor(Color.BLUE);
+			graphics.fill(bonus);
+		});
+		else if(bonus.equals(BonusAvailable.SPEED_INCREASE))
+		context.renderFrame(graphics -> {
+			graphics.setColor(Color.YELLOW);
+			graphics.fill(bonus);
+		});
+		else if(bonus.equals(BonusAvailable.SPEED_DECREASE))
+		context.renderFrame(graphics -> {
+			graphics.setColor(Color.ORANGE);
+			graphics.fill(bonus);
+		});
+		else if(bonus.equals(BonusAvailable.INVERSE_DIRECTION))
+		context.renderFrame(graphics -> {
+			graphics.setColor(Color.BLACK);
+			graphics.fill(bonus);
+		});
+		else if(bonus.equals(BonusAvailable.SIZE_DECREASE))
+		context.renderFrame(graphics -> {
+			graphics.setColor(Color.PINK);
+			graphics.fill(bonus);
+		});
+		else if(bonus.equals(BonusAvailable.SIZE_INCREASE))
+		context.renderFrame(graphics -> {
+			graphics.setColor(Color.CYAN);
+			graphics.fill(bonus);
+		});
+		else if(bonus.equals(BonusAvailable.ERASE_ALL))
+		context.renderFrame(graphics -> {
+			graphics.setColor(Color.GRAY);
+			graphics.fill(bonus);
+		});
+		else if(bonus.equals(BonusAvailable.WALL_THROUGH))
+			context.renderFrame(graphics -> {
+				graphics.setColor(Color.MAGENTA);
+				graphics.fill(bonus);
+			});
+		else{
+			context.renderFrame(graphics -> {
+				graphics.setColor(Color.RED);
+				graphics.fill(bonus);
+			});	
+		}
 	}
 }
