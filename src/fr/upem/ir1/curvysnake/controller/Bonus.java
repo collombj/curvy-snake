@@ -284,6 +284,8 @@ public class Bonus implements Cloneable {
 		if (getClass() != obj.getClass())
 			return false;
 		Bonus other = (Bonus) obj;
+		if(duration!=other.duration)
+			return false;
 		if (eraseAll != other.eraseAll)
 			return false;
 		if (inverseDirection != other.inverseDirection)

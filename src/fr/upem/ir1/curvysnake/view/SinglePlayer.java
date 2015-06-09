@@ -29,8 +29,10 @@ package fr.upem.ir1.curvysnake.view;
 import fr.umlv.zen5.*;
 import fr.umlv.zen5.Event;
 import fr.umlv.zen5.Event.Action;
+import fr.upem.ir1.curvysnake.controller.Bonus;
 import fr.upem.ir1.curvysnake.controller.BonusAvailable;
 import fr.upem.ir1.curvysnake.controller.BonusListInGame;
+import fr.upem.ir1.curvysnake.controller.Entry;
 import fr.upem.ir1.curvysnake.controller.MoveTo;
 import fr.upem.ir1.curvysnake.controller.Snake;
 import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
@@ -174,54 +176,54 @@ public class SinglePlayer {
 			graphics.fill(queu);
 		});
 	}
-	private static void drawBonus(RectangularShape bonus){
+	private static void drawBonus(Entry<RectangularShape,Bonus> bonus){
 		if(bonus==null){
 			return;
 		}
-		if(bonus.equals(BonusAvailable.NEXT_HOPE))
+		if(bonus.getValue().equals(BonusAvailable.NEXT_HOPE))
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.BLUE);
-			graphics.fill(bonus);
+			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.equals(BonusAvailable.SPEED_INCREASE))
+		else if(bonus.getValue().equals(BonusAvailable.SPEED_INCREASE))
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.YELLOW);
-			graphics.fill(bonus);
+			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.equals(BonusAvailable.SPEED_DECREASE))
+		else if(bonus.getValue().equals(BonusAvailable.SPEED_DECREASE))
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.ORANGE);
-			graphics.fill(bonus);
+			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.equals(BonusAvailable.INVERSE_DIRECTION))
+		else if(bonus.getValue().equals(BonusAvailable.INVERSE_DIRECTION))
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.BLACK);
-			graphics.fill(bonus);
+			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.equals(BonusAvailable.SIZE_DECREASE))
+		else if(bonus.getValue().equals(BonusAvailable.SIZE_DECREASE))
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.PINK);
-			graphics.fill(bonus);
+			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.equals(BonusAvailable.SIZE_INCREASE))
+		else if(bonus.getValue().equals(BonusAvailable.SIZE_INCREASE))
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.CYAN);
-			graphics.fill(bonus);
+			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.equals(BonusAvailable.ERASE_ALL))
+		else if(bonus.getValue().equals(BonusAvailable.ERASE_ALL))
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.GRAY);
-			graphics.fill(bonus);
+			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.equals(BonusAvailable.WALL_THROUGH))
+		else if(bonus.getValue().equals(BonusAvailable.WALL_THROUGH))
 			context.renderFrame(graphics -> {
 				graphics.setColor(Color.MAGENTA);
-				graphics.fill(bonus);
+				graphics.fill(bonus.getKey());
 			});
 		else{
 			context.renderFrame(graphics -> {
 				graphics.setColor(Color.RED);
-				graphics.fill(bonus);
+				graphics.fill(bonus.getKey());
 			});	
 		}
 	}

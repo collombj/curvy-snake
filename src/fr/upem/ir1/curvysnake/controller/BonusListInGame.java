@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import org.w3c.dom.css.Rect;
+
 /**
  * Class to manage the list of bonus active in the game.
  * <p>
@@ -84,7 +86,7 @@ public class BonusListInGame {
      *
      * @return The position of the new Bonus
      */
-    public RectangularShape random() {
+    public Entry<RectangularShape,Bonus> random() {
         Random r = new Random();
 
         if(r.nextInt(100) != 48)
@@ -103,7 +105,7 @@ public class BonusListInGame {
 
         this.add(position, BonusAvailable.random());
         System.out.println(this.bonusPosition.getLast().getValue());
-        return position;
+        return this.bonusPosition.getLast();
     }
 
     /**
