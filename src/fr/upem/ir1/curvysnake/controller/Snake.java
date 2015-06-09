@@ -56,7 +56,6 @@ import java.util.List;
  * @see BonusListInGame
  */
 public class Snake {
-
     /**
      * Aplha angle for the direction. It is a degree angle.
      */
@@ -88,12 +87,10 @@ public class Snake {
      *
      * @param init          The initial position of the Snake.
      * @param alpha         The initial alpha direction of the Snake.
-     * @param inStorageList The boolean to store (or not) the reference of the Snake in the static list of collision
-     *                      detection.
      *
      * @throws IllegalArgumentException If the alpha angle is outside the limit (0 - 180 -- +/-).
      */
-    public Snake(Point init, int alpha, boolean inStorageList) throws IllegalArgumentException {
+    public Snake(Point init, int alpha) throws IllegalArgumentException {
         if(Math.abs(alpha) > 180)
             throw new IllegalArgumentException();
 
@@ -101,21 +98,7 @@ public class Snake {
 
         this.movement = new Movement(init);
 
-        if(inStorageList)
-            SNAKE_LIST.add(this);
-    }
-
-    /**
-     * Constructor of the class. Initialize the initial position and direction. The Snake is not store in the main
-     * list of Snake (used for Snake collision).
-     *
-     * @param init  The initial position of the Snake.
-     * @param alpha The initial alpha direction of the Snake.
-     *
-     * @throws IllegalArgumentException If the alpha angle is outside the limit (0 - 180 -- +/-).
-     */
-    public Snake(Point init, int alpha) throws IllegalArgumentException {
-        this(init, alpha, false);
+        SNAKE_LIST.add(this);
     }
 
     /**
