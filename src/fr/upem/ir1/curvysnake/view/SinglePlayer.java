@@ -26,25 +26,19 @@
 
 package fr.upem.ir1.curvysnake.view;
 
-import fr.umlv.zen5.Application;
-import fr.umlv.zen5.ApplicationContext;
+import fr.umlv.zen5.*;
 import fr.umlv.zen5.Event;
-import fr.umlv.zen5.KeyboardKey;
-import fr.umlv.zen5.ScreenInfo;
 import fr.umlv.zen5.Event.Action;
-import fr.upem.ir1.curvysnake.controller.core.BonusListInGame;
-import fr.upem.ir1.curvysnake.controller.core.Snake;
+import fr.upem.ir1.curvysnake.controller.BonusListInGame;
+import fr.upem.ir1.curvysnake.controller.MoveTo;
+import fr.upem.ir1.curvysnake.controller.Snake;
 import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RectangularShape;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import com.sun.org.apache.xml.internal.security.Init;
 
 /**
  * @author collombj
@@ -66,7 +60,7 @@ public class SinglePlayer {
 		Snake player1 = new Snake(new Point((int) gameSize.getCenterX(),
 				(int) gameSize.getCenterY()), 0);
 
-		LinkedList<Ellipse2D.Float> lstIn = new LinkedList<Ellipse2D.Float>();
+		LinkedList<RectangularShape> lstIn = new LinkedList<>();
 		
 		/*
 		 * Interface Graphique initialisation
@@ -101,7 +95,7 @@ public class SinglePlayer {
 							
 							if(key==KeyboardKey.RIGHT){
 								try {
-									player1.changeDirection(Snake.MoveTo.RIGHT);
+									player1.changeDirection(MoveTo.RIGHT);
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -109,7 +103,7 @@ public class SinglePlayer {
 							}
 							if(key==KeyboardKey.LEFT){
 								try {
-									player1.changeDirection(Snake.MoveTo.LEFT);
+									player1.changeDirection(MoveTo.LEFT);
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -121,14 +115,14 @@ public class SinglePlayer {
 					}
 				
 				try {
-					List<Ellipse2D.Float> lstOut=null;
+					List<RectangularShape> lstOut=null;
 					lstOut=player1.move(lstIn);
 					
-					for (Ellipse2D.Float l : lstIn) {
+					for (RectangularShape l : lstIn) {
 						draw(l);
 					}
 					lstIn.clear();
-					for (Ellipse2D.Float l :lstOut){
+					for (RectangularShape l :lstOut){
 						undraw(l);
 					}
 					draw(player1.getQueue());
@@ -150,7 +144,7 @@ public class SinglePlayer {
 
 	}
 
-	private static void draw(Ellipse2D.Float body) {
+	private static void draw(RectangularShape body) {
 
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.GREEN);
@@ -158,7 +152,7 @@ public class SinglePlayer {
 		});
 
 	}
-	private static void undraw(Ellipse2D.Float queu){
+	private static void undraw(RectangularShape queu){
 
 		if(queu==null){
 			return;

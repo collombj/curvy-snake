@@ -2,6 +2,7 @@ package fr.upem.ir1.curvysnake.controller;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.RectangularShape;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -21,7 +22,7 @@ public class BonusListInGame {
     /**
      * List of Bonus associated to a position(and a radius - Ellipse2D.Float)
      */
-    private final LinkedList<Entry<Shape, Bonus>> bonusPosition;
+    private final LinkedList<Entry<RectangularShape, Bonus>> bonusPosition;
 
     /**
      * Default size of the radius action
@@ -45,7 +46,7 @@ public class BonusListInGame {
      * @param position The Bonus Ellipse
      * @param bonus    Bonus at the position
      */
-    public void add(Shape position, Bonus bonus) {
+    public void add(RectangularShape position, Bonus bonus) {
         this.bonusPosition.add(new Entry<>(position, bonus));
     }
 
@@ -56,12 +57,12 @@ public class BonusListInGame {
      *
      * @return Return a LinkedList<Bonus> hit by the Snake. If no bonus has been hit, return null.
      */
-    public List<Entry<Shape, Bonus>> get(Shape head) {
-        LinkedList<Entry<Shape, Bonus>> result = new LinkedList<>();
-        Shape key;
+    public List<Entry<RectangularShape, Bonus>> get(Shape head) {
+        LinkedList<Entry<RectangularShape, Bonus>> result = new LinkedList<>();
+        RectangularShape key;
 
         // If multiple bonus are close, the detection is ok
-        for(Entry<Shape, Bonus> entry : this.bonusPosition) {
+        for(Entry<RectangularShape, Bonus> entry : this.bonusPosition) {
             key = entry.getKey();
 
             if(head.intersects(key.getBounds2D().getX(), key.getBounds2D().getY(),
@@ -82,16 +83,16 @@ public class BonusListInGame {
      *
      * @return The position of the new Bonus
      */
-    public Shape random() {
+    public RectangularShape random() {
         Random r = new Random();
 
         int x;
         int y;
-        Shape position;
+        RectangularShape position;
 
         do {
-            x = r.nextInt(Snake.getGameSize().width) + Snake.getGameSize().x;
-            y = r.nextInt(Snake.getGameSize().height) + Snake.getGameSize().y;
+            x = r.nextInt((int)Snake.getGameSize().getWidth()) + (int)Snake.getGameSize().getX();
+            y = r.nextInt((int)Snake.getGameSize().getHeight()) + (int)Snake.getGameSize().getY();
 
             position = new Ellipse2D.Float(x, y, DEFAULT_DIAMETER, DEFAULT_DIAMETER);
         } while(this.intersects(position) || !Snake.positionIsFree(position));
@@ -108,8 +109,8 @@ public class BonusListInGame {
      *
      * @return Tru if a collision is detected, false else.
      */
-    public boolean intersects(Shape shape) {
-        for(Entry<Shape, Bonus> entry : this.bonusPosition) {
+    public boolean intersects(RectangularShape shape) {
+        for(Entry<RectangularShape, Bonus> entry : this.bonusPosition) {
             if(entry.getKey().intersects(shape.getBounds2D().getX(), shape.getBounds2D().getY(),
                                          shape.getBounds2D().getWidth(), shape.getBounds2D().getHeight()))
                 return true;
@@ -123,7 +124,7 @@ public class BonusListInGame {
      *
      * @param action The Consumer to apply to each element pf the Bonus list.
      */
-    public void forEach(Consumer<? super Entry<Shape, Bonus>> action) {
+    public void forEach(Consumer<? super Entry<RectangularShape, Bonus>> action) {
         this.bonusPosition.forEach(action);
     }
 }

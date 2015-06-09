@@ -29,11 +29,10 @@ package fr.upem.ir1.curvysnake.controller;
 import fr.upem.ir1.curvysnake.controller.exception.BonusException;
 import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
 import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
-import fr.upem.ir1.curvysnake.controller.MoveTo;
 
 import javax.naming.TimeLimitExceededException;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.RectangularShape;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -136,7 +135,7 @@ public class Snake {
      *
      * @return The information about the game size
      */
-    public static Rectangle getGameSize() {
+    public static RectangularShape getGameSize() {
         return Movement.getGameSize();
     }
 
@@ -145,7 +144,7 @@ public class Snake {
      *
      * @param rectangle New game size information
      */
-    public static void setGameSize(Rectangle rectangle) {
+    public static void setGameSize(RectangularShape rectangle) {
         Movement.setGameSize(rectangle);
     }
 
@@ -188,7 +187,7 @@ public class Snake {
      *
      * @return True if the position is free, false else.
      */
-    public static boolean positionIsFree(Shape position) {
+    public static boolean positionIsFree(RectangularShape position) {
         for(Snake snake : SNAKE_LIST) {
             if(snake.movement.intersects(position)) {
                 return false;
@@ -214,19 +213,19 @@ public class Snake {
      *
      * @return The last deleted position, or null if no position was deleted.
      *
-     * @throws CollisionException     If collision with a wall or a snake (another or itself) is detected.
-     * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
-     * @throws GameSizeException      If the GameSize is not set
-     * @throws BonusException         If the BonusListInGame is not set
+     * @throws CollisionException       If collision with a wall or a snake (another or itself) is detected.
+     * @throws IllegalAccessException   If a bonus can not be affected to a snake (ex: erase all)
+     * @throws GameSizeException        If the GameSize is not set
+     * @throws BonusException           If the BonusListInGame is not set
      * @throws IllegalArgumentException If "added" is null.
      * @see Movement
      */
-    public List<Ellipse2D.Float> move(List<Ellipse2D.Float> added) throws CollisionException, IllegalAccessException, GameSizeException,
-                                                                                  BonusException, IllegalArgumentException {
+    public List<RectangularShape> move(List<RectangularShape> added) throws CollisionException, IllegalAccessException, GameSizeException,
+                                                                                    BonusException, IllegalArgumentException {
         if(added == null)
             throw new IllegalArgumentException();
 
-        List<Ellipse2D.Float> result = new LinkedList<>();
+        List<RectangularShape> result = new LinkedList<>();
 
         int speedBonus = defaultSpeed;
         int sizeBonus = 0;
@@ -259,11 +258,11 @@ public class Snake {
         return result;
     }
 
-    private List<Ellipse2D.Float> detectBonus() throws BonusException, IllegalAccessException {
+    private List<RectangularShape> detectBonus() throws BonusException, IllegalAccessException {
         if(bonusListInGame == null)
             throw new BonusException("The BonusListInGame is not set for Snake");
 
-        LinkedList<Ellipse2D.Float> result = new LinkedList<>();
+        LinkedList<RectangularShape> result = new LinkedList<>();
 
         bonusListInGame.forEach((entry) -> {
             result.add(entry.getKey());
@@ -278,7 +277,7 @@ public class Snake {
      *
      * @return The Ellipse2D.Float position List.
      */
-    LinkedList<Ellipse2D.Float> getMove() {
+    LinkedList<RectangularShape> getMove() {
         return this.movement.getMove();
     }
 
@@ -304,17 +303,21 @@ public class Snake {
             else if(m == MoveTo.RIGHT) m = MoveTo.LEFT;
         }
 
+        System.out.println(this.alpha);
         if(m == MoveTo.LEFT) {
-            this.alpha--;
+            this.alpha += 5;
 
-            if(this.alpha < -180)
-                this.alpha = 179;
-        } else if(m == MoveTo.RIGHT) {
-            this.alpha++;
-
-            if(this.alpha >= -179)
+            if(this.alpha >= 360) {
                 this.alpha = 0;
+            }
+        } else if(m == MoveTo.RIGHT) {
+            this.alpha -= 5;
+
+            if(this.alpha <= -360) {
+                this.alpha = 0;
+            }
         }
+        System.out.println(this.alpha);
     }
 
     /**
@@ -341,7 +344,7 @@ public class Snake {
      *
      * @return The Ellipse2D.Float showing the Snake head.
      */
-    public Ellipse2D.Float getHead() {
+    public RectangularShape getHead() {
         return this.movement.getHead();
     }
 
@@ -350,7 +353,7 @@ public class Snake {
      *
      * @return The Ellipse2D.Float showing the Snake queue.
      */
-    public Ellipse2D.Float getQueue() {
+    public RectangularShape getQueue() {
         return this.movement.getQueue();
     }
 
@@ -384,10 +387,10 @@ public class Snake {
      * @return The Point which is representing the direction.
      */
     public Point getDirection() {
-        double x = Math.cos(this.alpha) * Movement.defaultDiameter / 3;
-        double y = Math.asin(this.alpha) * Movement.defaultDiameter / 3;
-
-        return new Point((int) x, (int) y);
+        int x = (int)Math.round(Math.cos(this.alpha * 0.017453292519943) * Movement.defaultDiameter / 2);
+        int y = (int)Math.round(Math.sin(this.alpha * 0.017453292519943) * Movement.defaultDiameter / 2);
+        System.out.println(x + ", " + y);
+        return new Point(x, y);
     }
 
     /**

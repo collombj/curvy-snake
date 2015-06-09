@@ -28,9 +28,11 @@ package fr.upem.ir1.curvysnake.controller;
 
 import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
 import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
+import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.RectangularShape;
 import java.util.LinkedList;
 
 /**
@@ -50,11 +52,11 @@ class Movement {
     /**
      * The border limit minimum of the movement (allowed - include)
      */
-    private static Rectangle gameSize = null;
+    private static RectangularShape gameSize = null;
     /**
      * List of <code>Ellipse2D.Float</code> (body) elements.
      */
-    private final LinkedList<Ellipse2D.Float> move = new LinkedList<>();
+    private final LinkedList<RectangularShape> move = new LinkedList<>();
     /**
      * Flag to know if a previous move was done or not. It is used to increase the snake size (every other time).
      */
@@ -77,7 +79,7 @@ class Movement {
      *
      * @return The information about the game size
      */
-    static Rectangle getGameSize() {
+    static RectangularShape getGameSize() {
         return gameSize;
     }
 
@@ -86,7 +88,7 @@ class Movement {
      *
      * @param rectangle New game size information
      */
-    static void setGameSize(Rectangle rectangle) {
+    static void setGameSize(RectangularShape rectangle) {
         gameSize = rectangle;
     }
 
@@ -95,7 +97,7 @@ class Movement {
      *
      * @return The snake body.
      */
-    LinkedList<Ellipse2D.Float> getMove() {
+    LinkedList<RectangularShape> getMove() {
         return this.move;
     }
 
@@ -104,8 +106,8 @@ class Movement {
      *
      * @return The last added Ellipse2D.Float.
      */
-    Ellipse2D.Float getHead() {
-        return (Ellipse2D.Float) this.move.getLast().clone();
+    RectangularShape getHead() {
+        return (RectangularShape) this.move.getLast().clone();
     }
 
     /**
@@ -113,8 +115,8 @@ class Movement {
      *
      * @return Return the queue element.
      */
-    Ellipse2D.Float getQueue() {
-        return (Ellipse2D.Float) this.move.getFirst().clone();
+    RectangularShape getQueue() {
+        return (RectangularShape) this.move.getFirst().clone();
     }
 
     /**
@@ -138,9 +140,9 @@ class Movement {
      *
      * @return True if an intersection is detected, false else.
      */
-    boolean intersects(Ellipse2D.Float position) {
-        for(Ellipse2D.Float aFloat : this.move) {
-            if(position.intersects(aFloat.getX(), aFloat.getY(), aFloat.getWidth(), aFloat.getHeight())) {
+    boolean intersects(RectangularShape position) {
+        for(RectangularShape shape : this.move) {
+            if(position.intersects(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight())) {
                 return true;
             }
         }
@@ -155,16 +157,16 @@ class Movement {
      *
      * @return True if the Snake head hit another snake, false else.
      */
-    public boolean intersects(LinkedList<Ellipse2D.Float> bodyList) {
-        Ellipse2D.Float head = this.getHead();
+    public boolean intersects(LinkedList<RectangularShape> bodyList) {
+        RectangularShape head = this.getHead();
 
         boolean himself = false;
         if(this.move == bodyList) himself = true;
 
         int i = 0;
         int sizeOther = bodyList.size();
-        for(Ellipse2D ellipse2D : bodyList) {
-            if(head.intersects(ellipse2D.getX(), ellipse2D.getY(), ellipse2D.getWidth(), ellipse2D.getHeight()))
+        for(RectangularShape shape : bodyList) {
+            if(head.intersects(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight()))
                 if(!himself || sizeOther - i > head.getWidth())
                     return true;
 
@@ -185,8 +187,8 @@ class Movement {
         if(gameSize == null)
             throw new GameSizeException();
 
-        Ellipse2D.Float head = this.getHead();
-        return !gameSize.contains(head.x, head.y, head.width, head.height);
+        RectangularShape head = this.getHead();
+        return !gameSize.contains(head.getX(), head.getY(), head.getWidth(), head.getHeight());
     }
 
     /**
@@ -204,7 +206,7 @@ class Movement {
      * @throws CollisionException If collision with a wall or a snake (another or itself) is detected.
      * @throws GameSizeException  If the GameSize is not set
      */
-    public Ellipse2D.Float move(Point direction, int size, int nextHope, boolean wallThrough) throws
+    public RectangularShape move(Point direction, int size, int nextHope, boolean wallThrough) throws
             CollisionException, GameSizeException {
 
         Rectangle nextHead = this.move.getLast().getBounds();
@@ -223,7 +225,7 @@ class Movement {
         }
 
         // Transform rectangle to ellipse
-        Ellipse2D.Float nextMove = new Ellipse2D.Float(nextHead.x, nextHead.y, nextHead.width, nextHead.height);
+        RectangularShape nextMove = new Ellipse2D.Float(nextHead.x, nextHead.y, nextHead.width, nextHead.height);
 
 
         this.move.add(nextMove);
@@ -256,23 +258,27 @@ class Movement {
      *
      * @throws GameSizeException If the GameSize is not set
      */
-    public void throughWall(Ellipse2D.Float head) throws GameSizeException {
+    public void throughWall(RectangularShape head) throws GameSizeException {
+        Rectangle headInfo = head.getBounds();
+
         if(gameSize == null)
             throw new GameSizeException();
 
-        if(head.x < gameSize.x) {
-            head.x = gameSize.x + gameSize.width - 1;
+        if(headInfo.getX() < gameSize.getX()) {
+            headInfo.x = (int)gameSize.getX() + (int)gameSize.getWidth() - 1;
         }
-        if(head.y < gameSize.y) {
-            head.y = gameSize.y + gameSize.height - 1;
+        if(headInfo.getY() < gameSize.getY()) {
+            headInfo.y =(int)gameSize.getY() + (int)gameSize.getHeight() - 1;
         }
 
-        if(head.x >= gameSize.x + gameSize.width - 1) {
-            head.x = gameSize.x;
+        if(headInfo.getX() >= gameSize.getX() + gameSize.getWidth() - 1) {
+            headInfo.x = (int)gameSize.getX();
         }
-        if(head.y >= gameSize.y + gameSize.height - 1) {
-            head.y = gameSize.y;
+        if(headInfo.getY() >= gameSize.getY() + gameSize.getHeight() - 1) {
+            headInfo.y = (int)gameSize.getY();
         }
+
+        head.setFrame(headInfo);
     }
 
     /**
@@ -280,7 +286,7 @@ class Movement {
      */
     public void clean() {
         // TODO Améliorer le nettoyage
-        Ellipse2D.Float head = this.move.getLast();
+        RectangularShape head = this.move.getLast();
         this.move.clear();
         this.move.add(head);
     }
