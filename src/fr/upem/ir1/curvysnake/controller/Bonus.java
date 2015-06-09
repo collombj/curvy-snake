@@ -20,7 +20,7 @@ public class Bonus implements Cloneable {
     /**
      * Default duration of the Bonus.
      */
-    private int duration = 100;
+    private int duration = 200;
 
     /**
      * Speed bonus.
@@ -53,7 +53,7 @@ public class Bonus implements Cloneable {
      * Default constructor. Initialize the time duration to 5.
      */
     private Bonus() {
-        
+
     }
 
     /**
@@ -262,46 +262,43 @@ public class Bonus implements Cloneable {
         return this;
     }
 
-    @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (eraseAll ? 1231 : 1237);
-		result = prime * result + (inverseDirection ? 1231 : 1237);
-		result = prime * result + nextHope;
-		result = prime * result + size;
-		result = prime * result + speed;
-		result = prime * result + (wallThrough ? 1231 : 1237);
-		return result;
-	}
+    public boolean isA(BonusAvailable bonus) {
+        if(speed != bonus.get().speed) return false;
+        if(size != bonus.get().size) return false;
+        if(nextHope != bonus.get().nextHope) return false;
+        if(wallThrough != bonus.get().wallThrough) return false;
+        if(inverseDirection != bonus.get().inverseDirection) return false;
+        return eraseAll == bonus.get().eraseAll;
+    }
 
     @Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Bonus other = (Bonus) obj;
-		if(duration!=other.duration)
-			return false;
-		if (eraseAll != other.eraseAll)
-			return false;
-		if (inverseDirection != other.inverseDirection)
-			return false;
-		if (nextHope != other.nextHope)
-			return false;
-		if (size != other.size)
-			return false;
-		if (speed != other.speed)
-			return false;
-		if (wallThrough != other.wallThrough)
-			return false;
-		return true;
-	}
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Bonus)) return false;
 
-	/**
+        Bonus bonus = (Bonus) o;
+
+        if(speed != bonus.speed) return false;
+        if(size != bonus.size) return false;
+        if(nextHope != bonus.nextHope) return false;
+        if(wallThrough != bonus.wallThrough) return false;
+        if(inverseDirection != bonus.inverseDirection) return false;
+        return eraseAll == bonus.eraseAll;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = speed;
+        result = 31 * result + size;
+        result = 31 * result + nextHope;
+        result = 31 * result + (wallThrough ? 1 : 0);
+        result = 31 * result + (inverseDirection ? 1 : 0);
+        result = 31 * result + (eraseAll ? 1 : 0);
+        return result;
+    }
+
+    /**
      * Clone method to duplicate the Bonus.
      *
      * @return The Bonus duplicated.

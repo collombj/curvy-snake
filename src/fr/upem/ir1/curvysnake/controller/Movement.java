@@ -28,7 +28,6 @@ package fr.upem.ir1.curvysnake.controller;
 
 import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
 import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
-import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -212,13 +211,13 @@ class Movement {
         Rectangle nextHead = this.move.getLast().getBounds();
 
         // Set the new size of the body element
-        size+=defaultDiameter;
-        nextHead.height=size;
-        nextHead.width=size;
+        nextHead.height = size + defaultDiameter;
+        nextHead.width = size + defaultDiameter;
 
         // Manage the next hope position
+        if((int)(Math.random()*25) == 13) nextHope = 0;
         for(int i = 0 ; i <= nextHope ; i++) {
-            nextHead.translate(direction.x, direction.y);
+            nextHead.translate(direction.x*size/2, direction.y*size/2);
         }
 
         // Transform rectangle to ellipse
@@ -262,17 +261,17 @@ class Movement {
             throw new GameSizeException();
 
         if(headInfo.getX() < gameSize.getX()) {
-            headInfo.x = (int)gameSize.getX() + (int)gameSize.getWidth() - 1;
+            headInfo.x = (int) gameSize.getX() + (int) gameSize.getWidth() - 1;
         }
         if(headInfo.getY() < gameSize.getY()) {
-            headInfo.y =(int)gameSize.getY() + (int)gameSize.getHeight() - 1;
+            headInfo.y = (int) gameSize.getY() + (int) gameSize.getHeight() - 1;
         }
 
         if(headInfo.getX() >= gameSize.getX() + gameSize.getWidth() - 1) {
-            headInfo.x = (int)gameSize.getX();
+            headInfo.x = (int) gameSize.getX();
         }
         if(headInfo.getY() >= gameSize.getY() + gameSize.getHeight() - 1) {
-            headInfo.y = (int)gameSize.getY();
+            headInfo.y = (int) gameSize.getY();
         }
 
         head.setFrame(headInfo);
@@ -281,10 +280,17 @@ class Movement {
     /**
      * Clean the Body element. Keep only the head of the body
      */
-    public void clean() {
-        // TODO Améliorer le nettoyage
+    public LinkedList<RectangularShape> clean() {
+        if(this.move.size() == 1)
+            return null;
+
+        LinkedList<RectangularShape> result = (LinkedList<RectangularShape>)this.move.clone();
+        result.removeLast();
+
         RectangularShape head = this.move.getLast();
         this.move.clear();
         this.move.add(head);
+
+        return result;
     }
 }

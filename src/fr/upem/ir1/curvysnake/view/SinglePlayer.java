@@ -85,18 +85,20 @@ public class SinglePlayer {
 					graphics.fill(new Rectangle2D.Float(0, 0, width, height));
 					
 				});
+			boolean flag = false;
 				while (true) {
-					Event event = context.pollOrWaitEvent(100);
+					Event event = context.pollOrWaitEvent(65);
 					if (event != null) { // no event
 						Action action = event.getAction();
 						if(action==Action.KEY_PRESSED){
 							
 						
 							KeyboardKey key=event.getKey();
-							
+							System.out.println(key);
+
 							if(key==KeyboardKey.RIGHT){
 								try {
-									player1.changeDirection(MoveTo.RIGHT);
+									player1.changeDirection(MoveTo.RIGHT, flag);
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -104,7 +106,7 @@ public class SinglePlayer {
 							}
 							if(key==KeyboardKey.LEFT){
 								try {
-									player1.changeDirection(MoveTo.LEFT);
+									player1.changeDirection(MoveTo.LEFT, flag);
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -114,9 +116,12 @@ public class SinglePlayer {
 								context.exit(0);
 			                    return;
 							}
+
+							flag = true;
 							
+						} else if(action==Action.KEY_RELEASED) {
+							flag = false;
 						}
-						
 					}
 				
 				try {
@@ -180,42 +185,42 @@ public class SinglePlayer {
 		if(bonus==null){
 			return;
 		}
-		if(bonus.getValue().equals(BonusAvailable.NEXT_HOPE))
+		if(bonus.getValue().isA(BonusAvailable.NEXT_HOPE))
 		context.renderFrame(graphics -> {
 			graphics.setColor(Color.BLUE);
 			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.getValue().equals(BonusAvailable.SPEED_INCREASE))
-		context.renderFrame(graphics -> {
+		else if(bonus.getValue().isA(BonusAvailable.SPEED_INCREASE))
+			context.renderFrame(graphics -> {
 			graphics.setColor(Color.YELLOW);
 			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.getValue().equals(BonusAvailable.SPEED_DECREASE))
-		context.renderFrame(graphics -> {
+		else if(bonus.getValue().isA(BonusAvailable.SPEED_DECREASE))
+			context.renderFrame(graphics -> {
 			graphics.setColor(Color.ORANGE);
 			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.getValue().equals(BonusAvailable.INVERSE_DIRECTION))
-		context.renderFrame(graphics -> {
+		else if(bonus.getValue().isA(BonusAvailable.INVERSE_DIRECTION))
+			context.renderFrame(graphics -> {
 			graphics.setColor(Color.BLACK);
 			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.getValue().equals(BonusAvailable.SIZE_DECREASE))
-		context.renderFrame(graphics -> {
+		else if(bonus.getValue().isA(BonusAvailable.SIZE_DECREASE))
+			context.renderFrame(graphics -> {
 			graphics.setColor(Color.PINK);
 			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.getValue().equals(BonusAvailable.SIZE_INCREASE))
-		context.renderFrame(graphics -> {
+		else if(bonus.getValue().isA(BonusAvailable.SIZE_INCREASE))
+			context.renderFrame(graphics -> {
 			graphics.setColor(Color.CYAN);
 			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.getValue().equals(BonusAvailable.ERASE_ALL))
-		context.renderFrame(graphics -> {
+		else if(bonus.getValue().isA(BonusAvailable.ERASE_ALL))
+			context.renderFrame(graphics -> {
 			graphics.setColor(Color.GRAY);
 			graphics.fill(bonus.getKey());
 		});
-		else if(bonus.getValue().equals(BonusAvailable.WALL_THROUGH))
+		else if(bonus.getValue().isA(BonusAvailable.WALL_THROUGH))
 			context.renderFrame(graphics -> {
 				graphics.setColor(Color.MAGENTA);
 				graphics.fill(bonus.getKey());

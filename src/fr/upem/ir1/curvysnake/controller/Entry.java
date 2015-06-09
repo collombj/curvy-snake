@@ -40,7 +40,7 @@ import java.util.Map;
  * @author GRISET  Valentin
  * @see <a href="http://stackoverflow.com/a/3110644">Source example - Jesper</a>
  */
-public class Entry<K, V> implements Map.Entry<K, V> {
+public class Entry<K, V> implements Map.Entry<K, V>, Cloneable {
     /**
      * The Key of the element.
      */
@@ -130,5 +130,10 @@ public class Entry<K, V> implements Map.Entry<K, V> {
     @Override
     public String toString() {
         return "Entry{" + "key=" + key + ", value=" + value + '}';
+    }
+
+    @Override
+    public Object clone() {
+        return new Entry<K, V>(this.key, this.value);
     }
 }

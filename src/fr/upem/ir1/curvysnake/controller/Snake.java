@@ -69,7 +69,7 @@ public class Snake {
     /**
      * Speed of the snake.
      */
-    private final static int defaultSpeed = 1;
+    private final static int defaultSpeed = 2;
     /**
      * List of Bonus actually in game.
      */
@@ -154,8 +154,13 @@ public class Snake {
     /**
      * Method to clean all Snake trace. This action keep only the head of the Snakes.
      */
-    private static void cleanAll() {
-        SNAKE_LIST.forEach(Snake::clean);
+    public static LinkedList<RectangularShape> cleanAll() {
+        LinkedList<RectangularShape> result = new LinkedList<>();
+        SNAKE_LIST.forEach(snake -> {
+            result.addAll(snake.clean());
+        });
+
+        return result;
     }
 
     /**
@@ -217,7 +222,6 @@ public class Snake {
         int nextHope = 0;
 
         boolean wallThrough = false;
-        boolean inverseDirection = false;
 
         // Check all bonus
         for(Bonus bonus : this.bonusList) {
@@ -226,8 +230,11 @@ public class Snake {
             nextHope += bonus.nextHope();
 
             wallThrough = wallThrough || bonus.wallThrough();
-            inverseDirection = inverseDirection || bonus.inverseDirection();
         }
+
+        if(speedBonus < 1) speedBonus = 1;
+        if(sizeBonus < 1) sizeBonus = 1;
+        if(nextHope > 5) nextHope = 5;
 
         // create the movement of 'speed-1' move
         for(int i = 0 ; i < speedBonus ; i++) {
@@ -249,13 +256,17 @@ public class Snake {
 
         LinkedList<RectangularShape> result = new LinkedList<>();
 
-        bonusListInGame.forEach((entry) -> {
-        	if(entry.getKey().intersects( this.getHead().getBounds())){
-        		result.add(entry.getKey());
-                this.addBonus(entry.getValue());	
-        	}
-            
-        });
+        Entry<RectangularShape, Bonus> entry;
+        Iterator<Entry<RectangularShape, Bonus>> it = bonusListInGame.iterator();
+        while(it.hasNext()) {
+            entry = it.next();
+
+            if(entry.getKey().intersects(this.getHead().getBounds())) {
+                result.add(entry.getKey());
+                result.addAll(this.addBonus(entry.getValue()));
+                it.remove();
+            }
+        }
 
         return result;
     }
@@ -278,7 +289,12 @@ public class Snake {
      * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
      */
     public void changeDirection(MoveTo m) throws IllegalAccessException {
-        boolean inverse = false;
+        this.changeDirection(m, false);
+    }
+    public void changeDirection(MoveTo m, boolean inTurn) throws IllegalAccessException {
+        boolean inverse = true;
+
+        int angle = inTurn ? 10 : 15;
 
         // Check only for inverse direction bonus
         for(Bonus bonus : this.bonusList) {
@@ -291,21 +307,23 @@ public class Snake {
             else if(m == MoveTo.RIGHT) m = MoveTo.LEFT;
         }
 
+        System.out.print(alpha);
         
         if(m == MoveTo.LEFT) {
-            this.alpha += 5;
+            this.alpha += angle;
 
             if(this.alpha >= 360) {
                 this.alpha = 0;
             }
         } else if(m == MoveTo.RIGHT) {
-            this.alpha -= 5;
+            this.alpha -= angle;
 
             if(this.alpha <= -360) {
                 this.alpha = 0;
             }
         }
-       
+
+        System.out.println(" - " + alpha);
     }
 
     /**
@@ -315,16 +333,15 @@ public class Snake {
      *
      * @param b The new bonus for the snake
      */
-    public void addBonus(Bonus b) {
-        if(b == null)
-            return;
-
-        if(b.eraseAll()) {
-            // TODO revoir cette partie en fonction des modifications
-            Snake.cleanAll();
-            this.clean();
-        } else
+    public LinkedList<RectangularShape> addBonus(Bonus b) {
+        if(b == null) {
+            return new LinkedList<>();
+        } else if(b.eraseAll()) {
+            return Snake.cleanAll();
+        } else {
             this.bonusList.add(b);
+            return new LinkedList<>();
+        }
     }
 
     /**
@@ -364,9 +381,8 @@ public class Snake {
     /**
      * Clean the Body element. Keep only the head of the body
      */
-    public void clean() {
-        //TODO revoir le système de nettoyage
-        this.movement.clean();
+    public LinkedList<RectangularShape> clean() {
+        return this.movement.clean();
     }
 
     /**
@@ -375,8 +391,8 @@ public class Snake {
      * @return The Point which is representing the direction.
      */
     public Point getDirection() {
-        int x = (int)Math.round(Math.cos(this.alpha * 0.017453292519943) * Movement.defaultDiameter / 2);
-        int y = (int)Math.round(Math.sin(this.alpha * 0.017453292519943) * Movement.defaultDiameter / 2);
+        int x = (int)Math.round(Math.cos(this.alpha * 0.017453292519943) * Movement.defaultDiameter );
+        int y = (int)Math.round(Math.sin(this.alpha * 0.017453292519943) * Movement.defaultDiameter );
         
         return new Point(x, y);
     }

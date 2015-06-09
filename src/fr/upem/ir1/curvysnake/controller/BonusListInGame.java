@@ -3,12 +3,11 @@ package fr.upem.ir1.curvysnake.controller;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RectangularShape;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
-
-import org.w3c.dom.css.Rect;
 
 /**
  * Class to manage the list of bonus active in the game.
@@ -29,7 +28,7 @@ public class BonusListInGame {
     /**
      * Default size of the radius action
      */
-    private final static int DEFAULT_DIAMETER = Movement.defaultDiameter*5;
+    private final static int DEFAULT_DIAMETER = Movement.defaultDiameter * 5;
 
     /**
      * Constructor by default to avoid warning..
@@ -86,10 +85,10 @@ public class BonusListInGame {
      *
      * @return The position of the new Bonus
      */
-    public Entry<RectangularShape,Bonus> random() {
+    public Entry<RectangularShape, Bonus> random() {
         Random r = new Random();
 
-        if(r.nextInt(100) != 48)
+        if(r.nextInt(100) != 48 || this.bonusPosition.size() >= 10)
             return null;
 
         int x;
@@ -97,15 +96,16 @@ public class BonusListInGame {
         RectangularShape position;
 
         do {
-            x = r.nextInt((int)Snake.getGameSize().getWidth()) + (int)Snake.getGameSize().getX();
-            y = r.nextInt((int)Snake.getGameSize().getHeight()) + (int)Snake.getGameSize().getY();
+            x = r.nextInt((int) Snake.getGameSize().getWidth()) + (int) Snake.getGameSize().getX();
+            y = r.nextInt((int) Snake.getGameSize().getHeight()) + (int) Snake.getGameSize().getY();
 
             position = new Ellipse2D.Float(x, y, DEFAULT_DIAMETER, DEFAULT_DIAMETER);
-        } while(this.intersects(position) || !Snake.positionIsFree(position));
+        } while(this.intersects(position) || !Snake.getGameSize().intersects(position.getBounds2D()) ||
+                        !Snake.positionIsFree(position));
 
         this.add(position, BonusAvailable.random());
         System.out.println(this.bonusPosition.getLast().getValue());
-        return this.bonusPosition.getLast();
+        return (Entry<RectangularShape, Bonus>) this.bonusPosition.getLast().clone();
     }
 
     /**
@@ -132,5 +132,9 @@ public class BonusListInGame {
      */
     public void forEach(Consumer<? super Entry<RectangularShape, Bonus>> action) {
         this.bonusPosition.forEach(action);
+    }
+
+    public Iterator<Entry<RectangularShape, Bonus>> iterator() {
+        return this.bonusPosition.iterator();
     }
 }
