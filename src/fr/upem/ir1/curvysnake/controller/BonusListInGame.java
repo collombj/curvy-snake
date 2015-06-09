@@ -86,6 +86,9 @@ public class BonusListInGame {
     public RectangularShape random() {
         Random r = new Random();
 
+        if(r.nextInt(100) != 48)
+            return null;
+
         int x;
         int y;
         RectangularShape position;
