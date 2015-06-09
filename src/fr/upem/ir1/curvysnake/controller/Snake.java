@@ -69,7 +69,7 @@ public class Snake {
     /**
      * Speed of the snake.
      */
-    private final static int defaultSpeed = 10;
+    private final static int defaultSpeed = 1;
     /**
      * List of Bonus actually in game.
      */
@@ -188,7 +188,7 @@ public class Snake {
      *
      * @return True if the position is free, false else.
      */
-    public static boolean positionIsFree(Ellipse2D.Float position) {
+    public static boolean positionIsFree(Shape position) {
         for(Snake snake : SNAKE_LIST) {
             if(snake.movement.intersects(position)) {
                 return false;
@@ -384,7 +384,7 @@ public class Snake {
      * @return The Point which is representing the direction.
      */
     public Point getDirection() {
-        double x = Math.acos(this.alpha) * Movement.defaultDiameter / 3;
+        double x = Math.cos(this.alpha) * Movement.defaultDiameter / 3;
         double y = Math.asin(this.alpha) * Movement.defaultDiameter / 3;
 
         return new Point((int) x, (int) y);
