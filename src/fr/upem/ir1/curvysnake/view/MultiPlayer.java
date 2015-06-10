@@ -49,9 +49,19 @@ import java.util.List;
  * @date 05/06/2015
  */
 public class MultiPlayer {
+	
+	/**
+	 * Create a gameSize
+	 */
     private static Rectangle gameSize = new Rectangle(0, 0, 500, 500);
+    /**
+     * Create a bonus list fo the game
+     */
     private static BonusListInGame bonusListInGame = new BonusListInGame();
 
+    /**
+     * 
+     */
     public static void run() {
         // Set environnement
         Snake.setGameSize(gameSize);

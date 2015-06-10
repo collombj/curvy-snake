@@ -27,8 +27,16 @@
 package fr.upem.ir1.curvysnake;
 
 import fr.upem.ir1.curvysnake.view.MultiPlayer;
+
 import fr.upem.ir1.curvysnake.view.SinglePlayer;
 
+/**
+ * 
+ * @author Valentin Griset -- Jérémie Collomb -- IR1
+ * 
+ * Initialise the game and start the game in SinglePlayer or MultiPlayer depending of the user argument.
+ *
+ */
 public class Main {
 
     public static void main(String[] args) {

@@ -24,8 +24,18 @@ import fr.upem.ir1.curvysnake.controller.Entry;
 
 public final class Draw {
 	
+	/**
+	 * context is the display windows
+	 */
 	public static ApplicationContext context;
 		
+	/**
+	 * 
+	 * It's to draw the snake
+	 * 
+	 * @param body position and the size of the circle
+	 * @param c is the color of the circle
+	 */
 	public static void draw(RectangularShape body, Color c) {
 
 		context.renderFrame(graphics -> {
@@ -34,6 +44,11 @@ public final class Draw {
 		});
 
 	}
+	
+	/**
+	 * Is to erase the queu of the snake 
+	 * @param queu is the position and the size of my circle
+	 */
 	public static void undraw(RectangularShape queu){
 
 		if(queu==null){
@@ -44,6 +59,10 @@ public final class Draw {
 			graphics.fill(queu);
 		});
 	}
+	/**
+	 * it's to draw a bonus with a different color
+	 * @param bonus the bonus to draw
+	 */
 	public static void drawBonus(Entry<RectangularShape,Bonus> bonus){
 		
 		
