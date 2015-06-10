@@ -72,8 +72,6 @@ public class SinglePlayer {
         Player player1 = new Player(new Snake(new Point((int) gameSize.getCenterX(), (int) gameSize.getCenterY()), 0)
                                            , Color.GREEN);
 
-        LinkedList<RectangularShape> lstIn = new LinkedList<>();
-
 		/*
          * Interface Graphique initialisation
 		 */
