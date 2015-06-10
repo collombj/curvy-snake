@@ -153,8 +153,8 @@ public class MultiPlayer {
 					List<RectangularShape> lstOut = null;
 					List<RectangularShape> lstOut2 = null;
 					if (time >= 25) {
-						lstOut = player1.getPlayer().move(lstIn);
-						lstOut2 = player2.getPlayer().move(lstIn);
+						//lstOut = player1.getPlayer().move(lstIn);
+						//lstOut2 = player2.getPlayer().move(lstIn);
 						time = 0;
 					}
 					if (lstIn != null) {
@@ -193,10 +193,10 @@ public class MultiPlayer {
 
 					Snake.decrementAll();
 
-				} catch (CollisionException e) {
+				/*} catch (CollisionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					context.exit(0);
+					context.exit(0);*/
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

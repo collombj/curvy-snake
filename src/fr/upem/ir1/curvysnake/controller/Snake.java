@@ -222,8 +222,8 @@ public class Snake {
         }
 
         if(speedBonus < 1) speedBonus = 1;
-        if(sizeBonus < -Movement.defaultDiameter + 1) sizeBonus = -Movement.defaultDiameter + 1;
-        if(nextHope > 100) nextHope = 100;
+        if(sizeBonus < -Movement.defaultDiameter +5) sizeBonus = -Movement.defaultDiameter +5;
+        if(nextHope > 50) nextHope = 50;
         if((int) (Math.random() * 25) == 13) nextHope = 0;
 
         // create the movement of 'speed-1' move
@@ -258,6 +258,7 @@ public class Snake {
                 erase.add(entry.getKey());
                 // if it is an erase all, erase all body element
                 this.addBonus(entry.getValue(), erase);
+                System.out.println(entry.getValue());
                 it.remove();
             }
         }
@@ -286,8 +287,6 @@ public class Snake {
         boolean inverse = true;
 
         int angle = inTurn ? 10 : 15;
-
-        System.out.println(angle);
 
         // Check only for inverse direction bonus
         for(Bonus bonus : this.bonusList) {

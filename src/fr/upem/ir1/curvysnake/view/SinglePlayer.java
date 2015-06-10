@@ -60,7 +60,8 @@ public class SinglePlayer {
         Snake.setBonusListInGame(bonusListInGame);
 
 
-        Player player1 = new Player(new Snake(new Point((int) gameSize.getCenterX(), (int) gameSize.getCenterY()), 0), Color.WHITE);
+        Player player1 = new Player(new Snake(new Point((int) gameSize.getCenterX(), (int) gameSize.getCenterY()), 0)
+                                           , Color.GREEN);
 
         LinkedList<RectangularShape> lstIn = new LinkedList<>();
 
@@ -92,12 +93,10 @@ public class SinglePlayer {
             List<RectangularShape> add = new ArrayList<>();
             List<RectangularShape> erase = new ArrayList<>();
 
-            //int countDown = 0;
             while(true) {
                 Event event = context.pollOrWaitEvent(1);
                 time++;
                 if(event != null) { // no event
-                    //System.out.println(time + "ms - " + countDown);
                     Action action = event.getAction();
                     if(action == Action.KEY_PRESSED) {
 
@@ -135,16 +134,15 @@ public class SinglePlayer {
                     if(time >= 26) {
                         player1.getPlayer().move(add,erase);
                         time = 0;
-                        //countDown++;
                     }
 
-                    add.forEach(Draw::draw);
+                    add.forEach(rectangularShape -> Draw.draw(rectangularShape, player1.getColor()));
                     add.clear();
 
                     erase.forEach(Draw::undraw);
                     erase.clear();
 
-                    Draw.draw(player1.getPlayer().getQueue());
+                    Draw.draw(player1.getPlayer().getQueue(), player1.getColor());
                     Draw.drawBonus(bonusListInGame.random());
 
 
@@ -152,8 +150,15 @@ public class SinglePlayer {
 
 
                 } catch(CollisionException e) {
-                    // TODO Auto-generated catch block
+                    erase.forEach(rectangularShape -> Draw.undraw(rectangularShape));
+                    add.forEach(rectangularShape -> Draw.draw(rectangularShape, player1.getColor()));
+
                     e.printStackTrace();
+                    try {
+                        Thread.sleep(4000);
+                    } catch(InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                     context.exit(0);
                 } catch(Exception e) {
                     e.printStackTrace();

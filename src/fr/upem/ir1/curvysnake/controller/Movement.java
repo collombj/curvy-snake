@@ -35,6 +35,7 @@ import java.awt.geom.RectangularShape;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+
 /**
  * This class represent the movement (full body) of the snake.
  * <p>
@@ -200,7 +201,7 @@ class Movement {
      * @param size        The bonus size needed to be added to the new body element size.
      * @param nextHope    The next position (movement from the previous position) of the new body element.
      * @param wallThrough Bonus to know if the snake is allowed to through a wall.
-     *                    @param erase The list of element to erase
+     * @param erase       The list of element to erase
      *
      * @throws CollisionException If collision with a wall or a snake (another or itself) is detected.
      * @throws GameSizeException  If the GameSize is not set
@@ -215,12 +216,14 @@ class Movement {
 
         // Set the new size of the body element
         size += defaultDiameter;
+        nextHead.x += (nextHead.width-size)/2;
+        nextHead.y += (nextHead.height-size)/2;
         nextHead.height = size;
         nextHead.width = size;
 
         // Manage the next hope position
         for(int i = 0 ; i <= nextHope ; i++) {
-            nextHead.translate(direction.x/2, direction.y/2);
+            nextHead.translate(direction.x/2 * (nextHope+1), direction.y/2 * (nextHope+1));
         }
 
         // Transform rectangle to ellipse
@@ -291,7 +294,7 @@ class Movement {
             return;
 
         erase.addAll(this.move);
-        erase.remove(erase.size()-1);
+        erase.remove(erase.size() - 1);
 
         RectangularShape head = this.move.getLast();
         this.move.clear();
