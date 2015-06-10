@@ -31,6 +31,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -67,8 +68,12 @@ public class MultiPlayer {
 				(int) gameSize.getCenterX(), (int) gameSize.getCenterY() + 50),
 				0), Color.RED);
 
-		LinkedList<RectangularShape> lstIn = new LinkedList<>();
-		LinkedList<RectangularShape> lstIn2 = new LinkedList<>();
+		List<RectangularShape> add = new ArrayList<>();
+        List<RectangularShape> erase = new ArrayList<>();
+        List<RectangularShape> add2 = new ArrayList<>();
+        List<RectangularShape> erase2 = new ArrayList<>();
+
+
 		/*
 		 * Interface Graphique initialisation
 		 */
@@ -92,14 +97,14 @@ public class MultiPlayer {
 				boolean flag = false;
 				int time = 0;
 				while (true) {
-					Event event = context.pollOrWaitEvent(1);
+					Event event = context.pollOrWaitEvent(20);
 					time++;
 					if (event != null) { // no event
 					Action action = event.getAction();
 					if (action == Action.KEY_PRESSED) {
 
 						KeyboardKey key = event.getKey();
-						System.out.println(key);
+						
 
 						if (key == KeyboardKey.RIGHT) {
 							try {
@@ -152,42 +157,42 @@ public class MultiPlayer {
 				try {
 					List<RectangularShape> lstOut = null;
 					List<RectangularShape> lstOut2 = null;
-					if (time >= 25) {
-						//lstOut = player1.getPlayer().move(lstIn);
-						//lstOut2 = player2.getPlayer().move(lstIn);
+					if (time >= 5) {
+						player1.getPlayer().move(add,erase);
+						player2.getPlayer().move(add2,erase2);
 						time = 0;
 					}
-					if (lstIn != null) {
-						for (RectangularShape l : lstIn) {
+					if (add != null) {
+						for (RectangularShape l : add) {
 							Draw.draw(l, player1.getColor());
 						}
 					}
-					lstIn.clear();
+					add.clear();
 
-					if (lstOut != null) {
-						for (RectangularShape l : lstOut) {
+					if (erase != null) {
+						for (RectangularShape l : erase) {
 							Draw.undraw(l);
 						}
 					}
 					Draw.draw(player1.getPlayer().getQueue(),
 							player1.getColor());
 
-					if (lstIn2 != null) {
-						for (RectangularShape l2 : lstIn2) {
-							System.out.println(player2.getColor());
+					if (add2 != null) {
+						for (RectangularShape l2 : add2) {
+							
 							Draw.draw(l2, player2.getColor());
 						}
-						lstIn.clear();
+						add2.clear();
 					}
 
-					if (lstOut2 != null) {
-						for (RectangularShape l2 : lstOut2) {
+					if (erase2 != null) {
+						for (RectangularShape l2 : erase2) {
 							Draw.undraw(l2);
 						}
 					}
 					Draw.draw(player2.getPlayer().getQueue(),
 							player2.getColor());
-					lstIn2.clear();
+					
 
 					Draw.drawBonus(bonusListInGame.random());
 
