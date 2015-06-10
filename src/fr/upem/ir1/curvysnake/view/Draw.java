@@ -1,9 +1,20 @@
 package fr.upem.ir1.curvysnake.view;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.geom.RectangularShape;
+
+
+import java.io.File;
+import java.io.IOException;
+
+
+
+
+import javax.imageio.ImageIO;
+
 
 
 import fr.umlv.zen5.ApplicationContext;
@@ -35,13 +46,13 @@ public final class Draw {
 	}
 	public static void drawBonus(Entry<RectangularShape,Bonus> bonus){
 		
-		Toolkit toolkit= Toolkit.getDefaultToolkit();
 		
 		if(bonus==null){
 			return;
 		}
 		if(bonus.getValue().isA(BonusAvailable.NEXT_HOPE))
 		context.renderFrame(graphics -> {
+			
 			graphics.setColor(Color.BLUE);
 			graphics.fill(bonus.getKey());
 		});
