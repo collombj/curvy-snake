@@ -234,7 +234,8 @@ public class Snake {
 
         if(speedBonus < 1) speedBonus = 1;
         if(sizeBonus < 1) sizeBonus = 1;
-        if(nextHope > 5) nextHope = 5;
+        if(nextHope > 100) nextHope = 5;
+        if((int)(Math.random()*25) == 13) nextHope = 0;
 
         // create the movement of 'speed-1' move
         for(int i = 0 ; i < speedBonus ; i++) {
