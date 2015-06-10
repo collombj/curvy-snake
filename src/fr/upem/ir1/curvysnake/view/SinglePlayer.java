@@ -134,13 +134,14 @@ public class SinglePlayer {
                     if(time >= 26) {
                         player1.getPlayer().move(add,erase);
                         time = 0;
+                        //countDown++;
                     }
+                    erase.forEach(Draw::undraw);
+                    erase.clear();
 
                     add.forEach(rectangularShape -> Draw.draw(rectangularShape, player1.getColor()));
                     add.clear();
 
-                    erase.forEach(Draw::undraw);
-                    erase.clear();
 
                     Draw.draw(player1.getPlayer().getQueue(), player1.getColor());
                     Draw.drawBonus(bonusListInGame.random());

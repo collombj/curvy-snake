@@ -32,8 +32,7 @@ import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RectangularShape;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -214,17 +213,17 @@ class Movement {
 
         Rectangle nextHead = this.move.getLast().getBounds();
 
-        // Set the new size of the body element
-        size += defaultDiameter;
-        nextHead.x += (nextHead.width-size)/2;
-        nextHead.y += (nextHead.height-size)/2;
-        nextHead.height = size;
-        nextHead.width = size;
-
         // Manage the next hope position
         for(int i = 0 ; i <= nextHope ; i++) {
-            nextHead.translate(direction.x/2 * (nextHope+1), direction.y/2 * (nextHope+1));
+            nextHead.translate(direction.x / 2 * (nextHope + 1), direction.y / 2 * (nextHope + 1));
         }
+
+        // Set the new size of the body element
+        size += defaultDiameter;
+        nextHead.x += nextHead.width - size;
+        nextHead.y += nextHead.height - size;
+        nextHead.height = size;
+        nextHead.width = size;
 
         // Transform rectangle to ellipse
         RectangularShape nextMove = new Ellipse2D.Float(nextHead.x, nextHead.y, nextHead.width, nextHead.height);
@@ -261,26 +260,26 @@ class Movement {
      * @throws GameSizeException If the GameSize is not set
      */
     public void throughWall(RectangularShape head) throws GameSizeException {
-        Rectangle headInfo = head.getBounds();
+        Rectangle bounds = head.getBounds();
 
         if(gameSize == null)
             throw new GameSizeException();
 
-        if(headInfo.getX() < gameSize.getX()) {
-            headInfo.x = (int) gameSize.getX() + (int) gameSize.getWidth() - 1;
+        if(bounds.getX() <= gameSize.getX()) {
+            bounds.x = (int) gameSize.getX() + (int) gameSize.getWidth() - (int) bounds.getWidth() - 1;
         }
-        if(headInfo.getY() < gameSize.getY()) {
-            headInfo.y = (int) gameSize.getY() + (int) gameSize.getHeight() - 1;
-        }
-
-        if(headInfo.getX() >= gameSize.getX() + gameSize.getWidth() - 1) {
-            headInfo.x = (int) gameSize.getX();
-        }
-        if(headInfo.getY() >= gameSize.getY() + gameSize.getHeight() - 1) {
-            headInfo.y = (int) gameSize.getY();
+        if(bounds.getY() <= gameSize.getY()) {
+            bounds.y = (int) gameSize.getY() + (int) gameSize.getHeight() - (int) bounds.getHeight() - 1;
         }
 
-        head.setFrame(headInfo);
+        if(bounds.getX() + bounds.getWidth() > gameSize.getX() + gameSize.getWidth() - 1) {
+            bounds.x = (int) gameSize.getX() + 1;
+        }
+        if(bounds.getY() + bounds.getHeight() > gameSize.getY() + gameSize.getHeight() - 1) {
+            bounds.y = (int) gameSize.getY() + 1;
+        }
+
+        head.setFrame(bounds);
     }
 
     /**
@@ -299,5 +298,14 @@ class Movement {
         RectangularShape head = this.move.getLast();
         this.move.clear();
         this.move.add(head);
+    }
+
+    public void getHeaders(int nb, List<RectangularShape> out) {
+        Iterator<RectangularShape> it = this.move.descendingIterator();
+        while(it.hasNext()) {
+            if(nb <= 0) return;
+            out.add(it.next());
+            nb--;
+        }
     }
 }

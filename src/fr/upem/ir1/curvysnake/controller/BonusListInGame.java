@@ -1,11 +1,9 @@
 package fr.upem.ir1.curvysnake.controller;
 
-import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RectangularShape;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -67,8 +65,8 @@ public class BonusListInGame {
         RectangularShape position;
 
         do {
-            x = r.nextInt((int) Snake.getGameSize().getWidth()) + (int) Snake.getGameSize().getX();
-            y = r.nextInt((int) Snake.getGameSize().getHeight()) + (int) Snake.getGameSize().getY();
+            x = r.nextInt((int) Snake.getGameSize().getWidth() - DEFAULT_DIAMETER) + (int) Snake.getGameSize().getX();
+            y = r.nextInt((int) Snake.getGameSize().getHeight() - DEFAULT_DIAMETER) + (int) Snake.getGameSize().getY();
 
             position = new Ellipse2D.Float(x, y, DEFAULT_DIAMETER, DEFAULT_DIAMETER);
         } while(this.intersects(position) || !Snake.getGameSize().intersects(position.getBounds2D()) ||
@@ -87,8 +85,7 @@ public class BonusListInGame {
      */
     public boolean intersects(RectangularShape shape) {
         for(Entry<RectangularShape, Bonus> entry : this.bonusPosition) {
-            if(entry.getKey().intersects(shape.getBounds2D().getX(), shape.getBounds2D().getY(),
-                                         shape.getBounds2D().getWidth(), shape.getBounds2D().getHeight()))
+            if(shape.intersects(entry.getKey().getBounds2D()))
                 return true;
         }
 

@@ -235,11 +235,11 @@ public class Snake {
             this.movement.move(this.getDirection(), sizeBonus, nextHope, wallThrough, erase);
 
             add.add(this.getHead());
-            this.detectBonus(erase);
+            this.detectBonus(add, erase);
         }
     }
 
-    private void detectBonus(List<RectangularShape> erase)
+    private void detectBonus(List<RectangularShape> add, List<RectangularShape> erase)
             throws BonusException, IllegalAccessException {
 
         if(erase == null)
@@ -260,6 +260,7 @@ public class Snake {
                 this.addBonus(entry.getValue(), erase);
                 System.out.println(entry.getValue());
                 it.remove();
+
             }
         }
 
