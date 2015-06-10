@@ -129,14 +129,18 @@ public class SinglePlayer {
 						lstOut=player1.getPlayer().move(lstIn);
 						time=0;
 					}
-					
-					for (RectangularShape l : lstIn) {
-						Draw.draw(l);
+
+					if(lstIn != null) {
+						for(RectangularShape l : lstIn) {
+							Draw.draw(l);
+						}
+						lstIn.clear();
 					}
-					lstIn.clear();
-					
-					for (RectangularShape l :lstOut){
-						Draw.undraw(l);
+
+					if(lstOut != null) {
+						for(RectangularShape l : lstOut) {
+							Draw.undraw(l);
+						}
 					}
 					
 					Draw.draw(player1.getPlayer().getQueue());

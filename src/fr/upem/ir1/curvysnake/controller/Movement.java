@@ -39,7 +39,7 @@ import java.util.LinkedList;
  * <p>
  * <p>The class offer some methods to manipulate the body (see after).</p>
  *
- * @author COLLOMB Jérémie
+ * @author COLLOMB Jï¿½rï¿½mie
  * @author GRISET  Valentin
  */
 class Movement {
@@ -215,7 +215,6 @@ class Movement {
         nextHead.width = size + defaultDiameter;
 
         // Manage the next hope position
-        if((int)(Math.random()*25) == 13) nextHope = 0;
         for(int i = 0 ; i <= nextHope ; i++) {
             nextHead.translate(direction.x*size/2, direction.y*size/2);
         }
