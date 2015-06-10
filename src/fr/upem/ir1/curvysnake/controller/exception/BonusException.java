@@ -27,10 +27,13 @@
 package fr.upem.ir1.curvysnake.controller.exception;
 
 /**
- * @author collombj
- * @project EelZen
- * @package fr.upem.ir1.curvysnake.controller.exception
- * @date 05/06/2015
+ * Exception representing a Bonus. THis exception is throw when :
+ * <ul>
+ *     <li>When the BonusListInGame is empty</li>
+ * </ul>
+ *
+ * @author COLLOMB Jérémie
+ * @author GRISET  Valentin
  */
 public class BonusException extends Exception {
     public BonusException(String s) {

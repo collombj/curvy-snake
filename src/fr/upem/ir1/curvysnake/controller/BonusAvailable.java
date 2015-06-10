@@ -38,15 +38,42 @@ import java.util.Random;
  * @see Bonus
  */
 public enum BonusAvailable {
+    /**
+     * Bonus increasing the speed.
+     */
     SPEED_INCREASE(Bonus.speed(1)),
+    /**
+     * Bonus decreasing the speed.
+     */
     SPEED_DECREASE(Bonus.speed(-1)),
+    /**
+     * Bonus increasing the size.
+     */
     SIZE_INCREASE(Bonus.size(10)),
+    /**
+     * Bonus decreasing the size.
+     */
     SIZE_DECREASE(Bonus.size(-3)),
+    /**
+     * Bonus creating a hole.
+     */
     NEXT_HOPE(Bonus.nextHope(5).setDuration(50)),
+    /**
+     * Bonus allowing the Snake to through the different Wall
+     */
     WALL_THROUGH(Bonus.wallThrough(true)),
+    /**
+     * Bonus reversing the keyboard action.
+     */
     INVERSE_DIRECTION(Bonus.inverseDirection(true)),
+    /**
+     * Bonus erasing all body corpse.
+     */
     ERASE_ALL(Bonus.eraseAll(true));
 
+    /**
+     * List of bonus type existing in the game.
+     */
     static private BonusAvailable[] list = {
                                                    SPEED_INCREASE,
                                                    SPEED_DECREASE,

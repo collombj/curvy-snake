@@ -89,7 +89,7 @@ public class Snake {
      * @throws IllegalArgumentException If the alpha angle is outside the limit (0 - 180 -- +/-).
      */
     public Snake(Point init, int alpha) throws IllegalArgumentException {
-        if(Math.abs(alpha) > 180)
+        if(Math.abs(alpha) > 360)
             throw new IllegalArgumentException();
 
         this.alpha = alpha;
@@ -149,6 +149,8 @@ public class Snake {
 
     /**
      * Method to clean all Snake trace. This action keep only the head of the Snakes.
+     *
+     * @param erase The list of element erase by the clean action.
      */
     public static void cleanAll(List<RectangularShape> erase) {
         SNAKE_LIST.forEach(snake -> {
@@ -157,7 +159,7 @@ public class Snake {
     }
 
     /**
-     * Method to decrement all Snake bonus.
+     * Method to decrement all Snake bonus time.
      */
     public static void decrementAll() {
         SNAKE_LIST.forEach(Snake::decrement);
@@ -171,11 +173,7 @@ public class Snake {
      * @return True if the position is free, false else.
      */
     public static boolean positionIsFree(RectangularShape position) {
-        for(Snake snake : SNAKE_LIST) {
-            if(snake.movement.intersects(position)) {
-                return false;
-            }
-        }
+        for(Snake snake : SNAKE_LIST) if(snake.movement.intersects(position)) return false;
 
         return true;
     }
@@ -192,13 +190,14 @@ public class Snake {
     /**
      * Move the Snake
      *
-     * @param add The list of element added with the snake body.
+     * @param add   The list of element added with the snake body.
+     * @param erase The list of element erased from the snake body.
      *
      * @throws CollisionException       If collision with a wall or a snake (another or itself) is detected.
      * @throws IllegalAccessException   If a bonus can not be affected to a snake (ex: erase all)
      * @throws GameSizeException        If the GameSize is not set
      * @throws BonusException           If the BonusListInGame is not set
-     * @throws IllegalArgumentException If "added" is null.
+     * @throws IllegalArgumentException If "add" or "erase" are null.
      * @see Movement
      */
     public void move(List<RectangularShape> add, List<RectangularShape> erase)
@@ -222,7 +221,7 @@ public class Snake {
         }
 
         if(speedBonus < 1) speedBonus = 1;
-        if(sizeBonus < -Movement.defaultDiameter +5) sizeBonus = -Movement.defaultDiameter +5;
+        if(sizeBonus < -Movement.defaultDiameter + 5) sizeBonus = -Movement.defaultDiameter + 5;
         if(nextHope > 50) nextHope = 50;
         if((int) (Math.random() * 25) == 13) nextHope = 0;
 
@@ -239,6 +238,15 @@ public class Snake {
         }
     }
 
+    /**
+     * Method to detect a head collision with a bonus
+     *
+     * @param add   The list of element added with the snake body.
+     * @param erase The list of element erased from the snake body.
+     *
+     * @throws BonusException           If the BonusListInGame is not set
+     * @throws IllegalArgumentException If "add" or "erase" are null.
+     */
     private void detectBonus(List<RectangularShape> add, List<RectangularShape> erase)
             throws BonusException, IllegalAccessException {
 
@@ -319,7 +327,8 @@ public class Snake {
      * <p>
      * <p>The <code>Bonus</code> can be empty (null).</p>
      *
-     * @param b The new bonus for the snake
+     * @param b     The new bonus for the snake
+     * @param erase The list of element erased from the snake body.
      */
     public void addBonus(Bonus b, List<RectangularShape> erase) {
         if(b != null) {
@@ -334,7 +343,7 @@ public class Snake {
     /**
      * Method to get the head element of the Snake.
      *
-     * @return The Ellipse2D.Float showing the Snake head.
+     * @return The element showing the Snake head.
      */
     public RectangularShape getHead() {
         return this.movement.getHead();
@@ -343,7 +352,7 @@ public class Snake {
     /**
      * Method to get the queue element of the Snake.
      *
-     * @return The Ellipse2D.Float showing the Snake queue.
+     * @return The element showing the Snake queue.
      */
     public RectangularShape getQueue() {
         return this.movement.getQueue();
@@ -367,6 +376,8 @@ public class Snake {
 
     /**
      * Clean the Body element. Keep only the head of the body
+     *
+     * @param erase The list of element erased from the snake body.
      */
     public void clean(List<RectangularShape> erase) {
         this.movement.clean(erase);

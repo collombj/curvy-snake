@@ -50,10 +50,9 @@ public class Bonus implements Cloneable {
     private boolean eraseAll = false;
 
     /**
-     * Default constructor. Initialize the time duration to 5.
+     * Constructor to avoid Warning.
      */
     private Bonus() {
-
     }
 
     /**

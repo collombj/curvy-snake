@@ -27,10 +27,10 @@
 package fr.upem.ir1.curvysnake.controller.exception;
 
 /**
- * @author collombj
- * @project EelZen
- * @package fr.upem.ir1.curvysnake.controller.exception
- * @date 05/06/2015
+ * Exception throw when the GameSize is not set.
+ *
+ * @author COLLOMB Jérémie
+ * @author GRISET  Valentin
  */
 public class GameSizeException extends Exception {
 }

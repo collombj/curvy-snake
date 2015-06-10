@@ -127,11 +127,21 @@ public class Entry<K, V> implements Map.Entry<K, V>, Cloneable {
         return result;
     }
 
+    /**
+     * Method to display the Entry couple. TEST ONLY
+     *
+     * @return The String representation of the Entry
+     */
     @Override
     public String toString() {
         return "Entry{" + "key=" + key + ", value=" + value + '}';
     }
 
+    /**
+     * Method to clone this object to a new instance.
+     *
+     * @return The clone of this object.
+     */
     @Override
     public Object clone() {
         return new Entry<K, V>(this.key, this.value);

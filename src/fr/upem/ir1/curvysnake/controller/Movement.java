@@ -40,7 +40,7 @@ import java.util.List;
  * <p>
  * <p>The class offer some methods to manipulate the body (see after).</p>
  *
- * @author COLLOMB J�r�mie
+ * @author COLLOMB Jérémie
  * @author GRISET  Valentin
  */
 class Movement {
@@ -54,7 +54,7 @@ class Movement {
      */
     private static RectangularShape gameSize = null;
     /**
-     * List of <code>Ellipse2D.Float</code> (body) elements.
+     * List of <code>RectangularShape</code> (body) elements.
      */
     private final Deque<RectangularShape> move = new LinkedList<>();
     /**
@@ -134,9 +134,9 @@ class Movement {
     }
 
     /**
-     * Method to test if an Ellipse2D.Float is intersects this Snake body.
+     * Method to test if a position is intersecting this Snake body.
      *
-     * @param position The Ellipse2D.Float to test with this Snake body.
+     * @param position The position to test with this Snake body.
      *
      * @return True if an intersection is detected, false else.
      */
@@ -200,7 +200,7 @@ class Movement {
      * @param size        The bonus size needed to be added to the new body element size.
      * @param nextHope    The next position (movement from the previous position) of the new body element.
      * @param wallThrough Bonus to know if the snake is allowed to through a wall.
-     * @param erase       The list of element to erase
+     * @param erase       The list of element erased from the snake body.
      *
      * @throws CollisionException If collision with a wall or a snake (another or itself) is detected.
      * @throws GameSizeException  If the GameSize is not set
@@ -284,6 +284,8 @@ class Movement {
 
     /**
      * Clean the Body element. Keep only the head of the body
+     *
+     * @param erase The list of element erased from the snake body.
      */
     public void clean(List<RectangularShape> erase) {
         if(erase == null)

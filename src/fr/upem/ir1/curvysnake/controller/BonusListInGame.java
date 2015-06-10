@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 /**
  * Class to manage the list of bonus active in the game.
  * <p>
- * <p>The List of bonus is characterised by a <code>Position(x,y)</code>, a <code>radius</code> of action and a
+ * <p>The List of bonus is characterised by an <code>Rectangle</code> (or an Ellipse) and a
  * <code>Bonus</code>.</p>
  *
  * @author COLLOMB Jérémie
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 public class BonusListInGame {
 
     /**
-     * List of Bonus associated to a position(and a radius - Ellipse2D.Float)
+     * List of Bonus associated to an Rectangle
      */
     private final LinkedList<Entry<RectangularShape, Bonus>> bonusPosition;
 
@@ -35,6 +35,11 @@ public class BonusListInGame {
         this.bonusPosition = new LinkedList<>();
     }
 
+    /**
+     * Constructor to duplicate an existing Bonus.
+     *
+     * @param b The Bonus to duplicate.
+     */
     public BonusListInGame(BonusListInGame b) {
         this.bonusPosition = b.bonusPosition;
     }
@@ -50,7 +55,7 @@ public class BonusListInGame {
     }
 
     /**
-     * Generate a random position adn a random Bonus into the list of available Bonus.
+     * Generate a random position and a random Bonus into the list of available Bonus.
      *
      * @return The position of the new Bonus
      */
@@ -93,14 +98,9 @@ public class BonusListInGame {
     }
 
     /**
-     * ForEach Method alias for the List of Bonus in Game
-     *
-     * @param action The Consumer to apply to each element pf the Bonus list.
+     * Itertor method to create an iterator on the List of Bonus
+     * @return
      */
-    public void forEach(Consumer<? super Entry<RectangularShape, Bonus>> action) {
-        this.bonusPosition.forEach(action);
-    }
-
     public Iterator<Entry<RectangularShape, Bonus>> iterator() {
         return this.bonusPosition.iterator();
     }
