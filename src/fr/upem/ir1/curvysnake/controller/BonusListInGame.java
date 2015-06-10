@@ -88,7 +88,7 @@ public class BonusListInGame {
     public Entry<RectangularShape, Bonus> random() {
         Random r = new Random();
 
-        if(r.nextInt(100) != 48 || this.bonusPosition.size() >= 10)
+        if(r.nextInt(1000) != 48 || this.bonusPosition.size() >= 10)
             return null;
 
         int x;
