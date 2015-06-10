@@ -40,14 +40,17 @@ Le rendu graphic est réalisé grâce à la librairie Zen 5.
 ## Normes
 L'application a été développée avec la norme MVC (Model View Controller). Cependant, comme aucune base de données n'a été utilisée, la partie Model n'a pas été implémentée.
 
-La totalité du code (variables, javadoc ...) été rédigée en Anglais.
+La totalité du code (variables, javadoc ...) a été rédigée en Anglais.
 
 Aucune class n'a été récrite. C'est-à-dire que les class existants déjà au sein de Java ont été réutilisées.
 
 
 
 ## Utilitaires
-La class Entry
+La class Entry est une représentation d'un couple clé/valeur.
+
+Les Exceptions ne représentent que des situations des class développées.
+
 
 
 ## Corps du Serpent
