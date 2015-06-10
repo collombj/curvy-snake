@@ -40,9 +40,9 @@ import java.util.Random;
 public enum BonusAvailable {
     SPEED_INCREASE(Bonus.speed(1)),
     SPEED_DECREASE(Bonus.speed(-1)),
-    SIZE_INCREASE(Bonus.size(5)),
-    SIZE_DECREASE(Bonus.size(-5)),
-    NEXT_HOPE(Bonus.nextHope(50).setDuration(75)),
+    SIZE_INCREASE(Bonus.size(10)),
+    SIZE_DECREASE(Bonus.size(-3)),
+    NEXT_HOPE(Bonus.nextHope(5).setDuration(50)),
     WALL_THROUGH(Bonus.wallThrough(true)),
     INVERSE_DIRECTION(Bonus.inverseDirection(true)),
     ERASE_ALL(Bonus.eraseAll(true));

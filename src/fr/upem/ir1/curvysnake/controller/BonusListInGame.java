@@ -52,35 +52,6 @@ public class BonusListInGame {
     }
 
     /**
-     * Method to return bonus hit by the snake head.
-     *
-     * @param head THe head of the snake for the detection.
-     *
-     * @return Return a LinkedList<Bonus> hit by the Snake. If no bonus has been hit, return null.
-     */
-    public List<Entry<RectangularShape, Bonus>> get(Shape head) {
-        LinkedList<Entry<RectangularShape, Bonus>> result = new LinkedList<>();
-        RectangularShape key;
-
-        // If multiple bonus are close, the detection is ok
-        for(Entry<RectangularShape, Bonus> entry : this.bonusPosition) {
-            key = entry.getKey();
-
-            if(head.intersects(key.getBounds2D().getX(), key.getBounds2D().getY(),
-                               key.getBounds2D().getWidth(), key.getBounds2D().getHeight())) {
-                result.add(entry);
-                this.bonusPosition.remove(entry);
-                System.out.println("Je tape dans le bonus");
-            }
-        }
-
-        if(result.size() == 0)
-            return null;
-        else
-            return result;
-    }
-
-    /**
      * Generate a random position adn a random Bonus into the list of available Bonus.
      *
      * @return The position of the new Bonus
@@ -104,7 +75,6 @@ public class BonusListInGame {
                         !Snake.positionIsFree(position));
 
         this.add(position, BonusAvailable.random());
-        System.out.println(this.bonusPosition.getLast().getValue());
         return (Entry<RectangularShape, Bonus>) this.bonusPosition.getLast().clone();
     }
 
