@@ -32,8 +32,9 @@ import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RectangularShape;
+import java.util.Deque;
 import java.util.LinkedList;
-
+import java.util.List;
 /**
  * This class represent the movement (full body) of the snake.
  * <p>
@@ -55,7 +56,7 @@ class Movement {
     /**
      * List of <code>Ellipse2D.Float</code> (body) elements.
      */
-    private final LinkedList<RectangularShape> move = new LinkedList<>();
+    private final Deque<RectangularShape> move = new LinkedList<>();
     /**
      * Flag to know if a previous move was done or not. It is used to increase the snake size (every other time).
      */
@@ -96,7 +97,7 @@ class Movement {
      *
      * @return The snake body.
      */
-    LinkedList<RectangularShape> getMove() {
+    Deque<RectangularShape> getMove() {
         return this.move;
     }
 
@@ -156,7 +157,7 @@ class Movement {
      *
      * @return True if the Snake head hit another snake, false else.
      */
-    public boolean intersects(LinkedList<RectangularShape> bodyList) {
+    public boolean intersects(Deque<RectangularShape> bodyList) {
         RectangularShape head = this.getHead();
 
         boolean himself = false;
@@ -199,24 +200,27 @@ class Movement {
      * @param size        The bonus size needed to be added to the new body element size.
      * @param nextHope    The next position (movement from the previous position) of the new body element.
      * @param wallThrough Bonus to know if the snake is allowed to through a wall.
-     *
-     * @return The position leave by the snake, else if the snake is increasing it own size, return null.
+     *                    @param erase The list of element to erase
      *
      * @throws CollisionException If collision with a wall or a snake (another or itself) is detected.
      * @throws GameSizeException  If the GameSize is not set
      */
-    public RectangularShape move(Point direction, int size, int nextHope, boolean wallThrough) throws
+    public void move(Point direction, int size, int nextHope, boolean wallThrough, List<RectangularShape> erase) throws
             CollisionException, GameSizeException {
+
+        if(erase == null)
+            throw new NullPointerException();
 
         Rectangle nextHead = this.move.getLast().getBounds();
 
         // Set the new size of the body element
-        nextHead.height = size + defaultDiameter;
-        nextHead.width = size + defaultDiameter;
+        size += defaultDiameter;
+        nextHead.height = size;
+        nextHead.width = size;
 
         // Manage the next hope position
         for(int i = 0 ; i <= nextHope ; i++) {
-            nextHead.translate(direction.x*size/2, direction.y*size/2);
+            nextHead.translate(direction.x/2, direction.y/2);
         }
 
         // Transform rectangle to ellipse
@@ -242,8 +246,8 @@ class Movement {
         this.isIncreased = !this.isIncreased;
 
         // Every other time, the body size is increased.
-        if(!this.isIncreased) return this.move.pop();
-        return null;
+        if(!this.isIncreased)
+            erase.add(this.move.removeFirst());
     }
 
     /**
@@ -279,17 +283,18 @@ class Movement {
     /**
      * Clean the Body element. Keep only the head of the body
      */
-    public LinkedList<RectangularShape> clean() {
-        if(this.move.size() == 1)
-            return null;
+    public void clean(List<RectangularShape> erase) {
+        if(erase == null)
+            throw new NullPointerException();
 
-        LinkedList<RectangularShape> result = (LinkedList<RectangularShape>)this.move.clone();
-        result.removeLast();
+        if(this.move.size() == 1)
+            return;
+
+        erase.addAll(this.move);
+        erase.remove(erase.size()-1);
 
         RectangularShape head = this.move.getLast();
         this.move.clear();
         this.move.add(head);
-
-        return result;
     }
 }
