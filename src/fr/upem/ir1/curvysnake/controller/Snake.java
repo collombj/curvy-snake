@@ -69,7 +69,7 @@ public class Snake {
     /**
      * Speed of the snake.
      */
-    private final static int defaultSpeed = 2;
+    private final static int defaultSpeed = 3;
     /**
      * List of Bonus actually in game.
      */
@@ -294,7 +294,7 @@ public class Snake {
     public void changeDirection(MoveTo m, boolean inTurn) throws IllegalAccessException {
         boolean inverse = true;
 
-        int angle = inTurn ? 10 : 15;
+        int angle = inTurn ? 10 : 20;
 
         // Check only for inverse direction bonus
         for(Bonus bonus : this.bonusList) {

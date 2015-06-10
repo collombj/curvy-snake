@@ -29,10 +29,7 @@ package fr.upem.ir1.curvysnake.view;
 import fr.umlv.zen5.*;
 import fr.umlv.zen5.Event;
 import fr.umlv.zen5.Event.Action;
-import fr.upem.ir1.curvysnake.controller.Bonus;
-import fr.upem.ir1.curvysnake.controller.BonusAvailable;
 import fr.upem.ir1.curvysnake.controller.BonusListInGame;
-import fr.upem.ir1.curvysnake.controller.Entry;
 import fr.upem.ir1.curvysnake.controller.MoveTo;
 import fr.upem.ir1.curvysnake.controller.Snake;
 import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
@@ -52,7 +49,6 @@ import java.util.List;
 public class SinglePlayer {
 	private static Rectangle gameSize = new Rectangle(0, 0, 500, 500);
 	private static BonusListInGame bonusListInGame = new BonusListInGame();
-	private static ApplicationContext context;
 
 	public static void run() {
 		// Set environnement
@@ -60,9 +56,9 @@ public class SinglePlayer {
 		// Set Bonus List
 		Snake.setBonusListInGame(bonusListInGame);
 
-		Snake player1 = new Snake(new Point((int) gameSize.getCenterX(),
-				(int) gameSize.getCenterY()), 0);
-
+		
+		Player player1= new Player(new Snake(new Point((int)gameSize.getCenterX(),(int)gameSize.getCenterY()),0),Color.WHITE);
+		
 		LinkedList<RectangularShape> lstIn = new LinkedList<>();
 		
 		/*
@@ -70,7 +66,7 @@ public class SinglePlayer {
 		 */
 
 		Application.run(Color.WHITE, context -> {
-			SinglePlayer.context = context;
+			Draw.context = context;
 			// get the size of the screen
 				ScreenInfo screenInfo = context.getScreenInfo();
 				float width = screenInfo.getWidth();
@@ -86,8 +82,10 @@ public class SinglePlayer {
 					
 				});
 			boolean flag = false;
+			int time=0;
 				while (true) {
-					Event event = context.pollOrWaitEvent(65);
+					Event event = context.pollOrWaitEvent(1);
+					time++;
 					if (event != null) { // no event
 						Action action = event.getAction();
 						if(action==Action.KEY_PRESSED){
@@ -98,7 +96,7 @@ public class SinglePlayer {
 
 							if(key==KeyboardKey.RIGHT){
 								try {
-									player1.changeDirection(MoveTo.RIGHT, flag);
+									player1.getPlayer().changeDirection(MoveTo.RIGHT, flag);
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -106,7 +104,7 @@ public class SinglePlayer {
 							}
 							if(key==KeyboardKey.LEFT){
 								try {
-									player1.changeDirection(MoveTo.LEFT, flag);
+									player1.getPlayer().changeDirection(MoveTo.LEFT, flag);
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
@@ -126,21 +124,25 @@ public class SinglePlayer {
 				
 				try {
 					List<RectangularShape> lstOut=null;
-					lstOut=player1.move(lstIn);
+
+					if(time>=25){
+						lstOut=player1.getPlayer().move(lstIn);
+						time=0;
+					}
 					
 					for (RectangularShape l : lstIn) {
-						draw(l);
+						Draw.draw(l);
 					}
 					lstIn.clear();
 					
 					for (RectangularShape l :lstOut){
-						undraw(l);
+						Draw.undraw(l);
 					}
 					
-					draw(player1.getQueue());
+					Draw.draw(player1.getPlayer().getQueue());
 					
 					
-					drawBonus(bonusListInGame.random());
+					Draw.drawBonus(bonusListInGame.random());
 					
 					Snake.decrementAll();
 				
@@ -161,75 +163,5 @@ public class SinglePlayer {
 		 * Interface Graphique fin
 		 */
 
-	}
-
-	private static void draw(RectangularShape body) {
-
-		context.renderFrame(graphics -> {
-			graphics.setColor(Color.GREEN);
-			graphics.fill(body);
-		});
-
-	}
-	private static void undraw(RectangularShape queu){
-
-		if(queu==null){
-			return;
-		}
-		context.renderFrame(graphics -> {
-			graphics.setColor(Color.WHITE);
-			graphics.fill(queu);
-		});
-	}
-	private static void drawBonus(Entry<RectangularShape,Bonus> bonus){
-		if(bonus==null){
-			return;
-		}
-		if(bonus.getValue().isA(BonusAvailable.NEXT_HOPE))
-		context.renderFrame(graphics -> {
-			graphics.setColor(Color.BLUE);
-			graphics.fill(bonus.getKey());
-		});
-		else if(bonus.getValue().isA(BonusAvailable.SPEED_INCREASE))
-			context.renderFrame(graphics -> {
-			graphics.setColor(Color.YELLOW);
-			graphics.fill(bonus.getKey());
-		});
-		else if(bonus.getValue().isA(BonusAvailable.SPEED_DECREASE))
-			context.renderFrame(graphics -> {
-			graphics.setColor(Color.ORANGE);
-			graphics.fill(bonus.getKey());
-		});
-		else if(bonus.getValue().isA(BonusAvailable.INVERSE_DIRECTION))
-			context.renderFrame(graphics -> {
-			graphics.setColor(Color.BLACK);
-			graphics.fill(bonus.getKey());
-		});
-		else if(bonus.getValue().isA(BonusAvailable.SIZE_DECREASE))
-			context.renderFrame(graphics -> {
-			graphics.setColor(Color.PINK);
-			graphics.fill(bonus.getKey());
-		});
-		else if(bonus.getValue().isA(BonusAvailable.SIZE_INCREASE))
-			context.renderFrame(graphics -> {
-			graphics.setColor(Color.CYAN);
-			graphics.fill(bonus.getKey());
-		});
-		else if(bonus.getValue().isA(BonusAvailable.ERASE_ALL))
-			context.renderFrame(graphics -> {
-			graphics.setColor(Color.GRAY);
-			graphics.fill(bonus.getKey());
-		});
-		else if(bonus.getValue().isA(BonusAvailable.WALL_THROUGH))
-			context.renderFrame(graphics -> {
-				graphics.setColor(Color.MAGENTA);
-				graphics.fill(bonus.getKey());
-			});
-		else{
-			context.renderFrame(graphics -> {
-				graphics.setColor(Color.RED);
-				graphics.fill(bonus.getKey());
-			});	
-		}
 	}
 }

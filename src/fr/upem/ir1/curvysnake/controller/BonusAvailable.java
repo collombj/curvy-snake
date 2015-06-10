@@ -42,7 +42,7 @@ public enum BonusAvailable {
     SPEED_DECREASE(Bonus.speed(-1)),
     SIZE_INCREASE(Bonus.size(5)),
     SIZE_DECREASE(Bonus.size(-5)),
-    NEXT_HOPE(Bonus.nextHope(2).setDuration(75)),
+    NEXT_HOPE(Bonus.nextHope(50).setDuration(75)),
     WALL_THROUGH(Bonus.wallThrough(true)),
     INVERSE_DIRECTION(Bonus.inverseDirection(true)),
     ERASE_ALL(Bonus.eraseAll(true));
