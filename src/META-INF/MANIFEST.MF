@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Class-Path: zen5.jar ..\..\..\..\Libraries\Zen5\zen5.jar
-Main-Class: fr.upem.ir1.demo.Demo
+Main-Class: fr.upem.ir1.curvysnake.Main
 

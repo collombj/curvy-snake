@@ -31,13 +31,9 @@ import fr.upem.ir1.curvysnake.controller.exception.CollisionException;
 import fr.upem.ir1.curvysnake.controller.exception.GameSizeException;
 
 import javax.naming.TimeLimitExceededException;
-
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -87,8 +83,8 @@ public class Snake {
     /**
      * Constructor of the class. Initialize the initial position and direction.
      *
-     * @param init          The initial position of the Snake.
-     * @param alpha         The initial alpha direction of the Snake.
+     * @param init  The initial position of the Snake.
+     * @param alpha The initial alpha direction of the Snake.
      *
      * @throws IllegalArgumentException If the alpha angle is outside the limit (0 - 180 -- +/-).
      */
@@ -154,13 +150,10 @@ public class Snake {
     /**
      * Method to clean all Snake trace. This action keep only the head of the Snakes.
      */
-    public static LinkedList<RectangularShape> cleanAll() {
-        LinkedList<RectangularShape> result = new LinkedList<>();
+    public static void cleanAll(List<RectangularShape> erase) {
         SNAKE_LIST.forEach(snake -> {
-            result.addAll(snake.clean());
+            snake.clean(erase);
         });
-
-        return result;
     }
 
     /**
@@ -199,9 +192,7 @@ public class Snake {
     /**
      * Move the Snake
      *
-     * @param added The list of element added with the snake body.
-     *
-     * @return The last deleted position, or null if no position was deleted.
+     * @param add The list of element added with the snake body.
      *
      * @throws CollisionException       If collision with a wall or a snake (another or itself) is detected.
      * @throws IllegalAccessException   If a bonus can not be affected to a snake (ex: erase all)
@@ -210,12 +201,10 @@ public class Snake {
      * @throws IllegalArgumentException If "added" is null.
      * @see Movement
      */
-    public List<RectangularShape> move(List<RectangularShape> added) throws CollisionException, IllegalAccessException, GameSizeException,
-                                                                                    BonusException, IllegalArgumentException {
-        if(added == null)
-            throw new IllegalArgumentException();
-
-        List<RectangularShape> result = new LinkedList<>();
+    public void move(List<RectangularShape> add, List<RectangularShape> erase)
+            throws CollisionException, IllegalAccessException, GameSizeException, BonusException, IllegalArgumentException {
+        if(add == null || erase == null)
+            throw new NullPointerException();
 
         int speedBonus = defaultSpeed;
         int sizeBonus = 0;
@@ -233,9 +222,9 @@ public class Snake {
         }
 
         if(speedBonus < 1) speedBonus = 1;
-        if(sizeBonus < 1) sizeBonus = 1;
-        if(nextHope > 100) nextHope = 5;
-        if((int)(Math.random()*25) == 13) nextHope = 0;
+        if(sizeBonus < -Movement.defaultDiameter + 1) sizeBonus = -Movement.defaultDiameter + 1;
+        if(nextHope > 100) nextHope = 100;
+        if((int) (Math.random() * 25) == 13) nextHope = 0;
 
         // create the movement of 'speed-1' move
         for(int i = 0 ; i < speedBonus ; i++) {
@@ -243,19 +232,21 @@ public class Snake {
             if(i != 0)
                 nextHope = 0;
 
-            result.add(this.movement.move(this.getDirection(), sizeBonus, nextHope, wallThrough));
-            added.add(this.getHead());
-            result.addAll(this.detectBonus());
-        }
+            this.movement.move(this.getDirection(), sizeBonus, nextHope, wallThrough, erase);
 
-        return result;
+            add.add(this.getHead());
+            this.detectBonus(erase);
+        }
     }
 
-    private List<RectangularShape> detectBonus() throws BonusException, IllegalAccessException {
+    private void detectBonus(List<RectangularShape> erase)
+            throws BonusException, IllegalAccessException {
+
+        if(erase == null)
+            throw new NullPointerException();
+
         if(bonusListInGame == null)
             throw new BonusException("The BonusListInGame is not set for Snake");
-
-        LinkedList<RectangularShape> result = new LinkedList<>();
 
         Entry<RectangularShape, Bonus> entry;
         Iterator<Entry<RectangularShape, Bonus>> it = bonusListInGame.iterator();
@@ -263,13 +254,14 @@ public class Snake {
             entry = it.next();
 
             if(entry.getKey().intersects(this.getHead().getBounds())) {
-                result.add(entry.getKey());
-                result.addAll(this.addBonus(entry.getValue()));
+                // Delete the bonus display
+                erase.add(entry.getKey());
+                // if it is an erase all, erase all body element
+                this.addBonus(entry.getValue(), erase);
                 it.remove();
             }
         }
 
-        return result;
     }
 
     /**
@@ -277,7 +269,7 @@ public class Snake {
      *
      * @return The Ellipse2D.Float position List.
      */
-    LinkedList<RectangularShape> getMove() {
+    Deque<RectangularShape> getMove() {
         return this.movement.getMove();
     }
 
@@ -285,17 +277,17 @@ public class Snake {
      * Action of the user to change (<code>LEFT</code> or <code>RIGHT</code>) the direction (step by step only). The
      * direction is managed by the bonus action too.
      *
-     * @param m The movement realize by the user (LEFT or RIGHT only).
+     * @param m      The movement realize by the user (LEFT or RIGHT only).
+     * @param inTurn To inform if the Snake previous action is turning or not (change the angle)
      *
      * @throws IllegalAccessException If a bonus can not be affected to a snake (ex: erase all)
      */
-    public void changeDirection(MoveTo m) throws IllegalAccessException {
-        this.changeDirection(m, false);
-    }
     public void changeDirection(MoveTo m, boolean inTurn) throws IllegalAccessException {
         boolean inverse = true;
 
-        int angle = inTurn ? 10 : 20;
+        int angle = inTurn ? 10 : 15;
+
+        System.out.println(angle);
 
         // Check only for inverse direction bonus
         for(Bonus bonus : this.bonusList) {
@@ -308,8 +300,6 @@ public class Snake {
             else if(m == MoveTo.RIGHT) m = MoveTo.LEFT;
         }
 
-        System.out.print(alpha);
-        
         if(m == MoveTo.LEFT) {
             this.alpha += angle;
 
@@ -323,8 +313,6 @@ public class Snake {
                 this.alpha = 0;
             }
         }
-
-        System.out.println(" - " + alpha);
     }
 
     /**
@@ -334,14 +322,13 @@ public class Snake {
      *
      * @param b The new bonus for the snake
      */
-    public LinkedList<RectangularShape> addBonus(Bonus b) {
-        if(b == null) {
-            return new LinkedList<>();
-        } else if(b.eraseAll()) {
-            return Snake.cleanAll();
-        } else {
-            this.bonusList.add(b);
-            return new LinkedList<>();
+    public void addBonus(Bonus b, List<RectangularShape> erase) {
+        if(b != null) {
+            if(b.eraseAll()) {
+                Snake.cleanAll(erase);
+            } else {
+                this.bonusList.add(b);
+            }
         }
     }
 
@@ -382,8 +369,8 @@ public class Snake {
     /**
      * Clean the Body element. Keep only the head of the body
      */
-    public LinkedList<RectangularShape> clean() {
-        return this.movement.clean();
+    public void clean(List<RectangularShape> erase) {
+        this.movement.clean(erase);
     }
 
     /**
@@ -392,9 +379,9 @@ public class Snake {
      * @return The Point which is representing the direction.
      */
     public Point getDirection() {
-        int x = (int)Math.round(Math.cos(this.alpha * 0.017453292519943) * Movement.defaultDiameter );
-        int y = (int)Math.round(Math.sin(this.alpha * 0.017453292519943) * Movement.defaultDiameter );
-        
+        int x = (int) Math.round(Math.cos(this.alpha * 0.017453292519943) * Movement.defaultDiameter);
+        int y = (int) Math.round(Math.sin(this.alpha * 0.017453292519943) * Movement.defaultDiameter);
+
         return new Point(x, y);
     }
 
@@ -409,7 +396,11 @@ public class Snake {
         s.append("Snake: ");
 
         this.getMove().forEach((ellipse2D) -> {
-            s.append("(" + ellipse2D.getCenterX() + ", " + ellipse2D.getCenterY() + ", " + ellipse2D.getWidth() / 2 + "), ");
+            s.append("(")
+                    .append(ellipse2D.getCenterX()).append(", ")
+                    .append(ellipse2D.getCenterY()).append(", ")
+                    .append(ellipse2D.getWidth() / 2)
+                    .append("), ");
         });
         s.deleteCharAt(s.length() - 1);
 

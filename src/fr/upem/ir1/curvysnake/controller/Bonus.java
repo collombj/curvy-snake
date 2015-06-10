@@ -20,7 +20,7 @@ public class Bonus implements Cloneable {
     /**
      * Default duration of the Bonus.
      */
-    private int duration = 200;
+    private int duration = 1000;
 
     /**
      * Speed bonus.
