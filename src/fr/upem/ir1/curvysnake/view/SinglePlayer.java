@@ -66,7 +66,7 @@ public class SinglePlayer {
         LinkedList<RectangularShape> lstIn = new LinkedList<>();
 
 		/*
-		 * Interface Graphique initialisation
+         * Interface Graphique initialisation
 		 */
 
         Application.run(Color.WHITE, context -> {
@@ -102,74 +102,66 @@ public class SinglePlayer {
 
                         KeyboardKey key = event.getKey();
 
-                        if(key == KeyboardKey.RIGHT) {
-                            try {
+                        try {
+                            // Player
+                            if(key == KeyboardKey.RIGHT) {
                                 player1.getPlayer().changeDirection(MoveTo.RIGHT, flag);
-                            } catch(Exception e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
                             }
-                        }
-                        if(key == KeyboardKey.LEFT) {
-                            try {
+                            if(key == KeyboardKey.LEFT) {
                                 player1.getPlayer().changeDirection(MoveTo.LEFT, flag);
-                            } catch(Exception e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
                             }
-                        }
-                        if(key == KeyboardKey.Q) {
-                            context.exit(0);
+                        } catch(IllegalAccessException e) {
+                            e.printStackTrace();
+                            context.exit(-1);
                             return;
                         }
-
                         flag = true;
-
                     } else if(action == Action.KEY_RELEASED) {
                         flag = false;
                     }
                 }
 
-                try {
-                    if(time >= 26) {
-                        player1.getPlayer().move(add,erase);
-                        time = 0;
-                        //countDown++;
-                    }
-                    erase.forEach(Draw::undraw);
-                    erase.clear();
-
-                    add.forEach(rectangularShape -> Draw.draw(rectangularShape, player1.getColor()));
-                    add.clear();
-
-
-                    Draw.draw(player1.getPlayer().getQueue(), player1.getColor());
-                    Draw.drawBonus(bonusListInGame.random());
-
-
-                    Snake.decrementAll();
-
-
-                } catch(CollisionException e) {
-                    erase.forEach(rectangularShape -> Draw.undraw(rectangularShape));
-                    add.forEach(rectangularShape -> Draw.draw(rectangularShape, player1.getColor()));
-
-                    e.printStackTrace();
+                if(time >= 25) {
                     try {
-                        Thread.sleep(4000);
-                    } catch(InterruptedException e1) {
-                        e1.printStackTrace();
+                        if(player1.isAlive())
+                            player1.getPlayer().move(add, erase);
+                    } catch(CollisionException e) {
+                        player1.kill();
+
+                        try {
+                            Thread.sleep(2000);
+                        } catch(InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+
+                        context.exit(0);
+                        return;
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        context.exit(-1);
+                        return;
                     }
-                    context.exit(0);
-                } catch(Exception e) {
-                    e.printStackTrace();
+
+                    time = 0;
                 }
 
+                erase.forEach(Draw::undraw);
+                erase.clear();
+
+                Draw.draw(player1.getPlayer().getQueue(), player1.getColor());
+
+                add.forEach(rectangularShape -> Draw.draw(rectangularShape, player1.getColor()));
+                add.clear();
+
+                Draw.drawBonus(bonusListInGame.random());
+
+
+                Snake.decrementAll();
             }
         });
 
 		/*
-		 * Interface Graphique fin
+         * Interface Graphique fin
 		 */
 
     }

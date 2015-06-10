@@ -236,7 +236,7 @@ class Movement {
             if(wallThrough) {
                 this.throughWall(nextMove);
             } else {
-                this.move.removeLast();
+                // this.move.removeLast();
                 throw new CollisionException();
             }
         }
@@ -293,19 +293,9 @@ class Movement {
             return;
 
         erase.addAll(this.move);
-        erase.remove(erase.size() - 1);
 
         RectangularShape head = this.move.getLast();
         this.move.clear();
         this.move.add(head);
-    }
-
-    public void getHeaders(int nb, List<RectangularShape> out) {
-        Iterator<RectangularShape> it = this.move.descendingIterator();
-        while(it.hasNext()) {
-            if(nb <= 0) return;
-            out.add(it.next());
-            nb--;
-        }
     }
 }

@@ -258,7 +258,6 @@ public class Snake {
                 erase.add(entry.getKey());
                 // if it is an erase all, erase all body element
                 this.addBonus(entry.getValue(), erase);
-                System.out.println(entry.getValue());
                 it.remove();
 
             }
