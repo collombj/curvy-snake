@@ -26,8 +26,9 @@
 
 package fr.upem.ir1.curvysnake;
 
-import fr.upem.ir1.curvysnake.view.MultiPlayer;
+import javax.swing.JFrame;
 
+import fr.upem.ir1.curvysnake.view.MultiPlayer;
 import fr.upem.ir1.curvysnake.view.SinglePlayer;
 
 /**
@@ -40,9 +41,12 @@ import fr.upem.ir1.curvysnake.view.SinglePlayer;
 public class Main {
 
     public static void main(String[] args) {
-        if(args.length == 1 && (args[0].equals("multiplayer") || args[0].equals("--multiplayer")))
-            MultiPlayer.run();
-        else
-            SinglePlayer.run();
+        if(args.length == 1 && (args[0].equals("multiplayer") || args[0].equals("--multiplayer"))){
+        	
+        }
+            //MultiPlayer.run();
+        else{
+        	SinglePlayer single= new SinglePlayer();
+        }
     }
 }

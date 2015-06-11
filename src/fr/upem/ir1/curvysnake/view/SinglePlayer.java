@@ -43,139 +43,125 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.awt.Dimension; 
+import javax.swing.JFrame;
+
 /**
  * @author collombj
  * @project EelZen
  * @package fr.upem.ir1.curvysnake.controller
  * @date 05/06/2015
  */
-public class SinglePlayer {
+public class SinglePlayer extends JFrame {
+
+	private Draw pan = new Draw();
 	/**
 	 * Create a gameSize
 	 */
-    private static Rectangle gameSize = new Rectangle(0, 0, 500, 500);
-    /**
-     * Create a bonus list fo the game
-     */
-    private static BonusListInGame bonusListInGame = new BonusListInGame();
-
-    /**
-     * Play the game in multiplayer mode
-     */
-    public static void run() {
-        // Set environnement
-        Snake.setGameSize(gameSize);
-        // Set Bonus List
-        Snake.setBonusListInGame(bonusListInGame);
+	private static Rectangle gameSize = new Rectangle(0, 0, 500, 500);
+	/**
+	 * Create a bonus list fo the game
+	 */
+	private static BonusListInGame bonusListInGame = new BonusListInGame();
 
 
-        Player player1 = new Player(new Snake(new Point((int) gameSize.getCenterX(), (int) gameSize.getCenterY()), 0)
-                                           , Color.GREEN);
+	public SinglePlayer() {
+		this.setTitle("CurviSnake");
+		this.setSize((int) gameSize.getWidth(), (int) gameSize.getWidth());
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setContentPane(pan);
+		this.setVisible(true);
+		go();
 
-		/*
-         * Interface Graphique initialisation
-		 */
-
-        Application.run(Color.WHITE, context -> {
-            Draw.context = context;
-            // get the size of the screen
-            ScreenInfo screenInfo = context.getScreenInfo();
-            float width = screenInfo.getWidth();
-            float height = screenInfo.getHeight();
-            System.out.println("size of the screen (" + width + " x "
-                                       + height + ")");
-
-            gameSize.height = (int) height;
-            gameSize.width = (int) width;
-            context.renderFrame(graphics -> {
-                graphics.setColor(Color.WHITE);
-                graphics.fill(new Rectangle2D.Float(0, 0, width, height));
-
-            });
+	}
 
 
-            boolean flag = false;
-            int time = 0;
+	public void go() {
+		// Set environnement
+		Snake.setGameSize(gameSize);
+		// Set Bonus List
+		Snake.setBonusListInGame(bonusListInGame);
 
-            List<RectangularShape> add = new ArrayList<>();
-            List<RectangularShape> erase = new ArrayList<>();
-
-            while(true) {
-                Event event = context.pollOrWaitEvent(1);
-                time++;
-                if(event != null) { // no event
-                    Action action = event.getAction();
-                    if(action == Action.KEY_PRESSED) {
-
-                        KeyboardKey key = event.getKey();
-
-                        try {
-                            // Player
-                            if(key == KeyboardKey.RIGHT) {
-                                player1.getPlayer().changeDirection(MoveTo.RIGHT, flag);
-                            }
-                            if(key == KeyboardKey.LEFT) {
-                                player1.getPlayer().changeDirection(MoveTo.LEFT, flag);
-                            }
-
-                            // Exit
-                            if(key == KeyboardKey.P) {
-                                context.exit(0);
-                                return;
-                            }
-                        } catch(IllegalAccessException e) {
-                            e.printStackTrace();
-                            context.exit(-1);
-                            return;
-                        }
-                        flag = true;
-                    } else if(action == Action.KEY_RELEASED) {
-                        flag = false;
-                    }
-                }
-
-                if(time >= 25) {
-                    try {
-                        if(player1.isAlive())
-                            player1.getPlayer().move(add, erase);
-                    } catch(CollisionException e) {
-                        player1.kill();
-
-                        try {
-                            Thread.sleep(2000);
-                        } catch(InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
-
-                        context.exit(0);
-                        return;
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                        context.exit(-1);
-                        return;
-                    }
-
-                    time = 0;
-                }
-
-                erase.forEach(Draw::undraw);
-                erase.clear();
-
-                Draw.draw(player1.getPlayer().getQueue(), player1.getColor());
-
-                add.forEach(rectangularShape -> Draw.draw(rectangularShape, player1.getColor()));
-                add.clear();
-
-                Draw.drawBonus(bonusListInGame.random());
-
-
-                Snake.decrementAll();
-            }
-        });
+		Player player1 = new Player(new Snake(new Point(
+				(int) gameSize.getCenterX(), (int) gameSize.getCenterY()), 0),
+				Color.GREEN);
 
 		/*
-         * Interface Graphique fin
+		 * Interface Graphique initialisation
 		 */
 
-    }
+		boolean flag = false;
+		int time = 0;
+		List<RectangularShape> add = new ArrayList<>();
+		List<RectangularShape> erase = new ArrayList<>();
+		
+
+		while (true) {
+	
+			
+	
+			
+				try {
+					if (player1.isAlive())
+						player1.getPlayer().move(add, erase);
+				} catch (CollisionException e) {
+					player1.kill();
+					e.printStackTrace();
+
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+
+					return;
+				} catch (Exception e) {
+					e.printStackTrace();
+
+					return;
+				}
+
+				time = 0;
+			
+
+			if(add.size()==0){
+				System.out.println("zero");
+			}
+			System.out.println("avant le for");
+			System.out.println(add.size());
+			for (RectangularShape rectangularShape : add) {
+				
+				pan.setPosX((int) rectangularShape.getX());
+				pan.setPosY((int) rectangularShape.getY());
+				pan.setW((int) rectangularShape.getWidth());
+				pan.setH((int) rectangularShape.getHeight());;
+				pan.repaint();
+			}
+			System.out.println("après le for");
+		
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			
+
+			add.clear();
+            erase.clear();
+            
+            //erase.forEach(Draw::draw);
+
+			//erase.forEach(Draw::undraw);
+			erase.clear();
+
+
+			//Draw.drawBonus(bonusListInGame.random());
+
+			Snake.decrementAll();
+		
+
+		}
+	}
 }
