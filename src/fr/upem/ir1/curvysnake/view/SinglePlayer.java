@@ -117,6 +117,12 @@ public class SinglePlayer {
                             if(key == KeyboardKey.LEFT) {
                                 player1.getPlayer().changeDirection(MoveTo.LEFT, flag);
                             }
+
+                            // Exit
+                            if(key == KeyboardKey.P) {
+                                context.exit(0);
+                                return;
+                            }
                         } catch(IllegalAccessException e) {
                             e.printStackTrace();
                             context.exit(-1);
