@@ -112,7 +112,7 @@ En revanche, si l'on ne passe pas par le système de duplication, le temps peut 
 
 TODO : améliorer le système d'enum pour éviter une modification du temps.
 
-Une liste de bonus actuellement en jeu est aussi mise en place. Cette liste permet de simplifier complètement le système des bonus dans le jeu. Cette classe permet de détecter les collisisions entre un Snake et un bonus, ainsi que gérer le système d'apparition des bonus.
+Une liste de bonus actuellement en jeu est aussi mise en place. Cette liste permet de simplifier complètement le système des bonus dans le jeu. Cette classe permet de détecter les collisions  entre un Snake et un bonus, ainsi que gérer le système d'apparition des bonus.
 
 TODO : exporter la détection de Snake et la mettre dans BonusListInGame.
 
